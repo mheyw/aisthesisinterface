@@ -14,6 +14,11 @@
 
     function error(err) {
         console.warn(`ERROR(${err.code}): ${err.message}`);
+        if(err.code = 1){
+            document.getElementById("location--access").style.display = "none";
+            IO_obj.gpsLat = 0;
+            IO_obj.gpsLong = 0;
+        }
     }
 
     navigator.geolocation.getCurrentPosition(success, error, options);
