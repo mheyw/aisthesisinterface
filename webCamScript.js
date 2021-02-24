@@ -52,7 +52,7 @@ cameraTrigger.onclick = function() {
     let X = IO_obj.moGamma.toFixed(0);
     let Y = IO_obj.moBeta.toFixed(0);;
     let Time = current.toLocaleTimeString();
-    let UserImg = IO_obj.camImg;
+    let UserImg = '';
     $.ajax({
         type    : "POST",
         url     : "https://mothra.club",
