@@ -1,0 +1,69 @@
+<html lang=”en”>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Name of your awesome camera app -->
+        <title>Camera App</title>
+        <!-- Link to your main style sheet-->
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <!-- Camera -->
+        <main id="camera">
+            <!-- Camera sensor -->
+            <canvas id="camera--sensor"></canvas>
+            <!-- Camera view -->
+            <video id="camera--view" muted autoplay playsinline ></video>
+            <!-- Camera output -->
+            <img src="//:0" alt="" id="camera--output">
+            <!-- Camera trigger -->
+            <button id="camera--trigger">Take a picture</button>
+            <button class="roundedButton" id="camera--access" style="bottom:500px;">Allow Camera Access</button>
+            <button class="roundedButton" id="location--access" style="bottom:400px;">Allow Location Access</button>
+            <button class="roundedButton" id="motion--access" style="bottom:300px;">Allow Motion Access</button>
+            <p id="status"></p>
+            <script>
+                let IO_obj = {
+                    camImg: '',
+                    gpsLat: null,
+                    gpsLong: null,
+                    moAlpha: null,
+                    moGamma: null,
+                    moBeta: null
+                };
+
+                document.getElementById("camera--trigger").style.display = "none";
+
+                function loop(timestamp) {
+                    //if geolocation available remove button
+                    if(IO_obj.gpsLat !== null && IO_obj.gpsLat !== undefined){
+                        document.getElementById("location--access").style.display = "none";
+                    };
+                    //if motion data available remove button
+                    if(IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
+                        document.getElementById("motion--access").style.display = "none";
+                    };
+                    //if everything is available allow image capture
+                    if(IO_obj.gpsLat !== null && IO_obj.gpsLat !== undefined && IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
+                        document.getElementById("camera--trigger").style.display = "block";
+                        document.getElementById("status").style.display = "block";
+                        const status = document.querySelector('#status');
+                        status.textContent = IO_obj.gpsLat.toFixed(2) + '\r\n' +  IO_obj.gpsLong.toFixed(2) + '\r\n' + 
+                            IO_obj.moAlpha.toFixed(0) + '\r\n' + 
+                            IO_obj.moGamma.toFixed(0) + '\r\n' + 
+                            IO_obj.moBeta.toFixed(0);
+                    }
+
+                    lastRender = timestamp;
+                    window.requestAnimationFrame(loop);
+                }
+                let lastRender = 0;
+                window.requestAnimationFrame(loop);
+            </script>
+        </main>
+        <script src="webCamScript.js"></script>
+        <script src="gpsScript.js"></script>
+        <script src="motionScript.js"></script>
+    </body>
+</html>
