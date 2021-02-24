@@ -65,5 +65,7 @@ cameraAccess.onclick = function(){
     })
         .catch(error => {
         console.error(error);
+        
+        console.log("Permission Denied By User!");
     });
 };
