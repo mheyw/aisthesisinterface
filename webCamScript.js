@@ -52,11 +52,11 @@ cameraTrigger.onclick = function() {
     let X = IO_obj.moGamma.toFixed(0);
     let Y = IO_obj.moBeta.toFixed(0);;
     let Time = current.toLocaleTimeString();
-    let ImgRef = "";
+    let img = IO_obj.camImg;
     $.ajax({
         type    : "POST",
         url     : "https://mothra.club",
-        data    : {'Latitude': Latitude,'Longitude': Longitude ,'Z':Z,'X':X,'Y': Y, 'Time': Time, 'ImgRef': ImgRef},
+        data    : {'Latitude': Latitude,'Longitude': Longitude ,'Z':Z,'X':X,'Y': Y, 'Time': Time, 'Img': img},
         success: function(data){
             console.log(data);
         },
