@@ -9,6 +9,16 @@
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
+        <div id="welcome">
+            <tt>Aisthesis Interface</tt>
+            <p>This website collects location data, motion data and images to generate spatialised images for the purpose of an art project.</p>
+            <p>Any images you take may be used within an art piece that will be made using the data collected. </p>
+            <p>By using this site you agree to the use of any images or data collected.</p>
+            <p> All information collected is anonymous and will only be stored for the duration of the project.</p>
+            <p>Once you press begin you will be asked for permission to use your camera, location and motion data.</p>
+            <p><br><br></p>
+            <button class="roundedButton" id="begin" style="bottom: 30px" onclick="begin()">Begin</button>
+        </div>
         <!-- Camera -->
         <main id="camera">
             <!-- Camera sensor -->
@@ -24,6 +34,10 @@
             <button class="roundedButton" id="motion--access" style="bottom:300px;">Allow Motion Access</button>
             <p id="status"></p>
             <script>
+                function begin(){
+                    document.getElementById("welcome").style.display = "none";
+                }
+                
                 let IO_obj = {
                     camImg: '',
                     gpsLat: null,

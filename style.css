@@ -1,9 +1,32 @@
 html, body{
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
 }
+#welcome{
+    position: absolute; 
+    text-align: center;
+    top: 0; 
+    right: 0; 
+    bottom: 0; 
+    left: 0;
+    background-color: white;
+    z-index: 1;
+    padding: 2em;
+}
+
+tt {
+    font-size: 3em;
+    border-bottom: 2px solid white;
+    padding-bottom: 5px;
+}
+
+p {
+    color: black;
+    font-size: 1.2em;
+}
+
 #camera, #camera--view, #camera--sensor, #camera--output{
     position: fixed;
     height: 100%;
@@ -38,6 +61,7 @@ html, body{
     position: fixed;
     bottom: 500px;
     left: calc(50% - 100px);
+    pointer-events: auto;
 }
 
 #status{
@@ -72,5 +96,5 @@ select{
 }
 
 video::-webkit-media-controls {
-  display: none !important;
+    display: none !important;
 }
