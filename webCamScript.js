@@ -76,7 +76,7 @@ function uploadFile(file) {
     }
   };
 
-  fd.append('upload_preset', unsignedUploadPreset);
+  fd.append('upload_preset', undtgidc);
   fd.append('tags', 'browser_upload'); // Optional - add tag for image admin in Cloudinary
   fd.append('file', file);
   xhr.send(fd);
