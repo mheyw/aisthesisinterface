@@ -63,8 +63,8 @@ cameraTrigger.onclick = function() {
     cameraOutput.src = cameraSensor.toDataURL("image/png");
     IO_obj.camImg = cameraOutput.src;
     cameraOutput.classList.add("taken");
-    console.log(IO_obj);
-    uploadFile(IO_obj);
+    
+    uploadFile(IO_obj.camImg);
 
     let Latitude = IO_obj.gpsLat.toFixed(2);
     let Longitude = IO_obj.gpsLong.toFixed(2);
