@@ -1,8 +1,3 @@
-const cloudName = 'demo';
-const unsignedUploadPreset = 'doc_codepen_example';
-
-let urlSelect = document.getElementById("urlSelect");
-
 urlSelect.addEventListener("click", function(e) {
   uploadFile('https://res.cloudinary.com/demo/image/upload/sample.jpg')
   e.preventDefault(); // prevent navigation to "#"
@@ -40,7 +35,7 @@ function uploadFile(file) {
       var img = new Image(); // HTML5 Constructor
       img.src = tokens.join('/');
       img.alt = response.public_id;
-      document.getElementById('gallery').appendChild(img);
+      console.log(img);
     }
   };
 

@@ -36,6 +36,9 @@ function cameraStart() {
 };
 //get date
 let current = new Date();
+//cloud cdn consts
+const cloudName = 'dbl3jetzn';
+const unsignedUploadPreset = 'dundtgidc';
 
 // Take a picture when cameraTrigger is tapped
 cameraTrigger.onclick = function() {
@@ -45,6 +48,9 @@ cameraTrigger.onclick = function() {
     cameraOutput.src = cameraSensor.toDataURL("image/png");
     IO_obj.camImg = cameraOutput.src;
     cameraOutput.classList.add("taken");
+
+    uploadFile(IO_obj);
+  e.preventDefault();
 
     let Latitude = IO_obj.gpsLat.toFixed(2);
     let Longitude = IO_obj.gpsLong.toFixed(2);
