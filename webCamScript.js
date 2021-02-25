@@ -34,10 +34,6 @@ function cameraStart() {
         console.error(error);
     });
 };
-//get date
-let current = new Date();
-//file id
-let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 function uploadFile(file, public_id) {
 $.ajax({
@@ -76,6 +72,11 @@ cameraTrigger.onclick = function() {
     cameraOutput.src = cameraSensor.toDataURL("image/png");
     IO_obj.camImg = cameraOutput.src;
     cameraOutput.classList.add("taken");
+
+    //get date
+    let current = new Date();
+    //file id
+    let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
     uploadFile(IO_obj.camImg, fileID);
 
