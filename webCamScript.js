@@ -36,14 +36,15 @@ function cameraStart() {
 };
 //get date
 let current = new Date();
-
+//file id
+let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
 // *********** Upload file to Cloudinary ******************** //
-function uploadFile(file) {
+function uploadFile(file, public_id) {
   $.ajax({
         type    : "POST",
         url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
         beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
-        data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'use_filename' : 'true' ,'file': file},
+        data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
         success: function(data){
             console.log(data);
         },
@@ -64,7 +65,7 @@ cameraTrigger.onclick = function() {
     IO_obj.camImg = cameraOutput.src;
     cameraOutput.classList.add("taken");
 
-    uploadFile(IO_obj.camImg);
+    uploadFile(IO_obj.camImg, fileID);
 
     let Latitude = IO_obj.gpsLat.toFixed(2);
     let Longitude = IO_obj.gpsLong.toFixed(2);
