@@ -47,7 +47,8 @@
                     gpsLong: null,
                     moAlpha: null,
                     moGamma: null,
-                    moBeta: null
+                    moBeta: null,
+                    imgProgress: false
                 };
 
                 document.getElementById("camera--trigger").style.display = "none";
@@ -63,7 +64,10 @@
                     };
                     //if everything is available allow image capture
                     if(IO_obj.gpsLat !== null && IO_obj.gpsLat !== undefined && IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
-                        document.getElementById("camera--trigger").style.display = "block";
+                        //check if img is being uploaded
+                        if(IO_obj.imgProgress == false){
+                            document.getElementById("camera--trigger").style.display = "block";
+                        }
                         document.getElementById("status").style.display = "block";
                         const status = document.querySelector('#status');
                         status.textContent = IO_obj.gpsLat.toFixed(2) + '\r\n' +  IO_obj.gpsLong.toFixed(2) + '\r\n' + 
