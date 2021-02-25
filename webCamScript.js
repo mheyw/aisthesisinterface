@@ -73,7 +73,7 @@ cameraTrigger.onclick = function() {
     let X = IO_obj.moGamma.toFixed(0);
     let Y = IO_obj.moBeta.toFixed(0);;
     let Time = current.toLocaleTimeString();
-    let ImgRef = ""
+    let ImgRef = "https://res.cloudinary.com/dbl3jetzn/image/upload/v1614261237/uploads/" + fileID + ".png";
     $.ajax({
         type    : "POST",
         url     : "https://mothra.club",
