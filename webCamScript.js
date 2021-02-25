@@ -1,9 +1,9 @@
 // Define constants
 const cameraView = document.querySelector("#camera--view"),
-      cameraOutput = document.querySelector("#camera--output"),
-      cameraSensor = document.querySelector("#camera--sensor"),
-      cameraTrigger = document.querySelector("#camera--trigger"),
-      cameraAccess = document.querySelector("#camera--access");
+cameraOutput = document.querySelector("#camera--output"),
+cameraSensor = document.querySelector("#camera--sensor"),
+cameraTrigger = document.querySelector("#camera--trigger"),
+cameraAccess = document.querySelector("#camera--access");
 
 let currentStream;
 
@@ -24,13 +24,13 @@ function cameraStart() {
         audio: false
     };
     navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(stream => {
+    .getUserMedia(constraints)
+    .then(stream => {
         currentStream = stream;
         cameraView.srcObject = stream;
         return navigator.mediaDevices.enumerateDevices();
     })
-        .catch(error => {
+    .catch(error => {
         console.error(error);
     });
 };
@@ -41,19 +41,41 @@ let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
 // *********** Upload file to Cloudinary ******************** //
 function uploadFile(file, public_id) {
   $.ajax({
-        type    : "POST",
-        url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
-        beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
-        data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
-        success: function(data){
-            console.log(data);
-        },
-        error: function(xhr, status, error) {
-            console.log(xhr);
-            console.log(status);
-            console.log(error);
-        }
-    });
+    xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+                var percentComplete = evt.loaded / evt.total;
+                //Do something with upload progress here
+                console.log(percentComplete);
+            }
+        }, false);
+
+        xhr.addEventListener("progress", function(evt) {
+         if (evt.lengthComputable) {
+             var percentComplete = evt.loaded / evt.total;
+             console.log(percentComplete);
+               //Do something with download progress
+           }
+       }, false);
+
+        return xhr;
+    },
+
+
+    type    : "POST",
+    url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
+    beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
+    data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
+    success: function(data){
+        console.log(data);
+    },
+    error: function(xhr, status, error) {
+        console.log(xhr);
+        console.log(status);
+        console.log(error);
+    }
+});
 }
 
 // Take a picture when cameraTrigger is tapped
@@ -100,14 +122,14 @@ cameraAccess.onclick = function(){
         audio: false
     };
     navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(stream => {
+    .getUserMedia(constraints)
+    .then(stream => {
         currentStream = stream;
         cameraView.srcObject = stream;
         document.getElementById("camera--access").style.display = "none";
         return navigator.mediaDevices.enumerateDevices();
     })
-        .catch(error => {
+    .catch(error => {
         console.log("Permission Denied By User!");
     });
 };
