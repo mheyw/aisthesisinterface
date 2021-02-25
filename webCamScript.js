@@ -43,7 +43,7 @@ function uploadFile(file) {
         type    : "POST",
         url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
         beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
-        data    : {'upload_preset':'dundtgidc','tags': 'browser_upload' ,'file': file},
+        data    : {'upload_preset':'yimjoowb','tags': 'browser_upload' ,'file': file},
         success: function(data){
             console.log(data);
         },
