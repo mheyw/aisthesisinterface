@@ -36,13 +36,10 @@ function cameraStart() {
 };
 //get date
 let current = new Date();
-//cloud cdn consts
-const cloudName = 'dbl3jetzn';
-const unsignedUploadPreset = 'dundtgidc';
 
 // *********** Upload file to Cloudinary ******************** //
 function uploadFile(file) {
-  var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+  var url = `https://api.cloudinary.com/v1_1/dbl3jetzn/upload`;
   var xhr = new XMLHttpRequest();
   var fd = new FormData();
   xhr.open('POST', url, true);
@@ -76,7 +73,7 @@ function uploadFile(file) {
     }
   };
 
-  fd.append('upload_preset', undtgidc);
+  fd.append('upload_preset', 'dundtgidc');
   fd.append('tags', 'browser_upload'); // Optional - add tag for image admin in Cloudinary
   fd.append('file', file);
   xhr.send(fd);
