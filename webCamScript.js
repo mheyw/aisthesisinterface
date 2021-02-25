@@ -40,42 +40,34 @@ let current = new Date();
 let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
 // *********** Upload file to Cloudinary ******************** //
 function uploadFile(file, public_id) {
-  $.ajax({
-    xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function(evt) {
-            if (evt.lengthComputable) {
-                var percentComplete = evt.loaded / evt.total;
-                //Do something with upload progress here
-                console.log(percentComplete);
-            }
-        }, false);
+    // Reset the upload progress bar
+    document.getElementById('progress').style.width = 0;
 
-        xhr.addEventListener("progress", function(evt) {
-         if (evt.lengthComputable) {
-             var percentComplete = evt.loaded / evt.total;
-             console.log(percentComplete);
-               //Do something with download progress
-           }
-       }, false);
+    $.ajax({
+        xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function(e) {
+                var progress = Math.round((e.loaded * 100.0) / e.total);
+                document.getElementById('progress').style.width = progress + "%";
 
-        return xhr;
-    },
+                console.log(`fileuploadprogress data.loaded: ${e.loaded},
+                  data.total: ${e.total}`);
+            });  
+        },
 
-
-    type    : "POST",
-    url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
-    beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
-    data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
-    success: function(data){
-        console.log(data);
-    },
-    error: function(xhr, status, error) {
-        console.log(xhr);
-        console.log(status);
-        console.log(error);
-    }
-});
+        type    : "POST",
+        url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
+        beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
+        data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
+        success: function(data){
+            console.log(data);
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr);
+            console.log(status);
+            console.log(error);
+        }
+    });
 }
 
 // Take a picture when cameraTrigger is tapped
