@@ -43,7 +43,7 @@ function uploadFile(file) {
         type    : "POST",
         url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
         beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
-        data    : {'upload_preset':'undtgidc','tags': 'browser_upload' ,'file': file},
+        data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'use_filename' : 'true' ,'file': file},
         success: function(data){
             console.log(data);
         },
@@ -63,7 +63,7 @@ cameraTrigger.onclick = function() {
     cameraOutput.src = cameraSensor.toDataURL("image/png");
     IO_obj.camImg = cameraOutput.src;
     cameraOutput.classList.add("taken");
-    
+
     uploadFile(IO_obj.camImg);
 
     let Latitude = IO_obj.gpsLat.toFixed(2);
