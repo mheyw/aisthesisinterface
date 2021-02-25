@@ -51,9 +51,7 @@ $.ajax({
     xhr.upload.addEventListener("progress", function(evt){
       let progress = Math.round((evt.loaded * 100.0) / evt.total);
                 document.getElementById('progress').style.width = progress + "%";
-
-                console.log(`fileuploadprogress data.loaded: ${evt.loaded},
-                  data.total: ${evt.total}`);
+                console.log(progress);
       }, false);
     return xhr;
   },
@@ -72,38 +70,6 @@ $.ajax({
 });
 }
 
-// function uploadFile(file, public_id) {
-//     // Reset the upload progress bar
-//     document.getElementById('progress').style.width = 0;
-
-//     $.ajax({
-//         xhr: function()
-//   {
-//         xhr: function(xhr){xhr.upload.addEventListener("progress", function(e) {
-//                 let progress = Math.round((e.loaded * 100.0) / e.total);
-//                 document.getElementById('progress').style.width = progress + "%";
-
-//                 console.log(`fileuploadprogress data.loaded: ${e.loaded},
-//                   data.total: ${e.total}`);
-//             }, false);  
-//         },
-
-//         type    : "POST",
-//         url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
-//         beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
-//         data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
-//         success: function(data){
-//             console.log(data);
-//         },
-//         error: function(xhr, status, error) {
-//             console.log(xhr);
-//             console.log(status);
-//             console.log(error);
-//         }
-//     });
-// }
-// }
-
 // Take a picture when cameraTrigger is tapped
 cameraTrigger.onclick = function() {
     cameraSensor.width = cameraView.videoWidth;
@@ -114,7 +80,7 @@ cameraTrigger.onclick = function() {
     cameraOutput.classList.add("taken");
 
     uploadFile(IO_obj.camImg, fileID);
-    console.log(fileID);
+
     let Latitude = IO_obj.gpsLat.toFixed(2);
     let Longitude = IO_obj.gpsLong.toFixed(2);
     let Z = IO_obj.moAlpha.toFixed(0);
