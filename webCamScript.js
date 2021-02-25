@@ -38,24 +38,26 @@ function cameraStart() {
 let current = new Date();
 //file id
 let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
-// *********** Upload file to Cloudinary ******************** //
+
 function uploadFile(file, public_id) {
     // Reset the upload progress bar
     document.getElementById('progress').style.width = 0;
 
-    $.ajax({
-        xhr: function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", function(e) {
-                var progress = Math.round((e.loaded * 100.0) / e.total);
+$.ajax({
+  xhr: function()
+  {
+    var xhr = new window.XMLHttpRequest();
+    //Upload progress
+    xhr.upload.addEventListener("progress", function(evt){
+      let progress = Math.round((evt.loaded * 100.0) / evt.total);
                 document.getElementById('progress').style.width = progress + "%";
 
-                console.log(`fileuploadprogress data.loaded: ${e.loaded},
-                  data.total: ${e.total}`);
-            });  
-        },
-
-        type    : "POST",
+                console.log(`fileuploadprogress data.loaded: ${evt.loaded},
+                  data.total: ${evt.total}`);
+      }, false);
+    return xhr;
+  },
+   type    : "POST",
         url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
         beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
         data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
@@ -67,8 +69,40 @@ function uploadFile(file, public_id) {
             console.log(status);
             console.log(error);
         }
-    });
+});
 }
+
+// function uploadFile(file, public_id) {
+//     // Reset the upload progress bar
+//     document.getElementById('progress').style.width = 0;
+
+//     $.ajax({
+//         xhr: function()
+//   {
+//         xhr: function(xhr){xhr.upload.addEventListener("progress", function(e) {
+//                 let progress = Math.round((e.loaded * 100.0) / e.total);
+//                 document.getElementById('progress').style.width = progress + "%";
+
+//                 console.log(`fileuploadprogress data.loaded: ${e.loaded},
+//                   data.total: ${e.total}`);
+//             }, false);  
+//         },
+
+//         type    : "POST",
+//         url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
+//         beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
+//         data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
+//         success: function(data){
+//             console.log(data);
+//         },
+//         error: function(xhr, status, error) {
+//             console.log(xhr);
+//             console.log(status);
+//             console.log(error);
+//         }
+//     });
+// }
+// }
 
 // Take a picture when cameraTrigger is tapped
 cameraTrigger.onclick = function() {
