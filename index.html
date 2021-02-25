@@ -34,6 +34,8 @@
             <button class="roundedButton" id="location--access" style="bottom:400px;">Allow Location Access</button>
             <button class="roundedButton" id="motion--access" style="bottom:300px;">Allow Motion Access</button>
             <p id="status"></p>
+            <div class="progress-bar" id="progress-bar">
+            <div class="progress" id="progress"></div>
             <script>
                 function begin(){
                     document.getElementById("welcome").style.display = "none";
@@ -77,6 +79,7 @@
                 window.requestAnimationFrame(loop);
             </script>
         </main>
+        <script src="fileUpload.js"></script>>
         <script src="webCamScript.js"></script>
         <script src="gpsScript.js"></script>
         <script src="motionScript.js"></script>

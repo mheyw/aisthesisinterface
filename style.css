@@ -114,3 +114,15 @@ select{
 video::-webkit-media-controls {
     display: none !important;
 }
+
+.progress-bar{
+  width: 200px;
+  position: relative;
+  height: 8px;
+  margin-top: 4px;
+}
+.progress-bar .progress{
+  height: 8px;
+  background-color: #ff0000;
+  width: 0;
+}
