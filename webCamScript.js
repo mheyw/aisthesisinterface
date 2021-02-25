@@ -40,18 +40,13 @@ let current = new Date();
 let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 function uploadFile(file, public_id) {
-    // Reset the upload progress bar
-    document.getElementById('progress').style.width = 0;
-
 $.ajax({
   xhr: function()
   {
-    var xhr = new window.XMLHttpRequest();
+    let xhr = new window.XMLHttpRequest();
     //Upload progress
     xhr.upload.addEventListener("progress", function(evt){
-      let progress = Math.round((evt.loaded * 100.0) / evt.total);
-                document.getElementById('progress').style.width = progress + "%";
-                console.log(progress);
+      IO_obj.ImgUpload = true;
       }, false);
     return xhr;
   },
@@ -61,6 +56,7 @@ $.ajax({
         data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
         success: function(data){
             console.log(data);
+            IO_obj.ImgUpload = false;
         },
         error: function(xhr, status, error) {
             console.log(xhr);

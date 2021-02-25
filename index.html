@@ -47,7 +47,8 @@
                     gpsLong: null,
                     moAlpha: null,
                     moGamma: null,
-                    moBeta: null
+                    moBeta: null,
+                    ImgUpload: false
                 };
 
                 document.getElementById("camera--trigger").style.display = "none";
@@ -71,6 +72,8 @@
                             IO_obj.moGamma.toFixed(0) + '\r\n' + 
                             IO_obj.moBeta.toFixed(0);
                     }
+
+                    console.log(IO_obj.ImgUpload);
 
                     lastRender = timestamp;
                     window.requestAnimationFrame(loop);
