@@ -46,7 +46,7 @@ $.ajax({
     let xhr = new window.XMLHttpRequest();
     //Upload progress
     xhr.upload.addEventListener("progress", function(evt){
-      IO_obj.ImgUpload = true;
+      document.getElementById("camera--trigger").style.display = "none";
       }, false);
     return xhr;
   },
@@ -56,7 +56,7 @@ $.ajax({
         data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
         success: function(data){
             console.log(data);
-            IO_obj.ImgUpload = false;
+            document.getElementById("camera--trigger").style.display = "block";
         },
         error: function(xhr, status, error) {
             console.log(xhr);
