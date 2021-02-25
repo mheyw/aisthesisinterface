@@ -61,10 +61,6 @@
                     if(IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
                         document.getElementById("motion--access").style.display = "none";
                     };
-                    //if image uploading stop user from taking another image
-                    if(IO_obj.ImgUpload == false){
-                        document.getElementById("camera--trigger").style.display = "block";
-                    }
                     //if everything is available allow image capture
                     if(IO_obj.gpsLat !== null && IO_obj.gpsLat !== undefined && IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
                         document.getElementById("camera--trigger").style.display = "block";
