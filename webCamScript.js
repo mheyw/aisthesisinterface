@@ -41,7 +41,7 @@ let current = new Date();
 function uploadFile(file) {
   $.ajax({
         type    : "POST",
-        url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/upload",
+        url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
         beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
         data    : {'upload_preset':'dundtgidc','tags': 'browser_upload' ,'file': file},
         success: function(data){
