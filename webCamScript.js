@@ -53,8 +53,6 @@ beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpReque
 data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
 success: function(data){
     console.log(data);
-    cameraTrigger.style.display = "block";
-    cameraOutput.style.right = "-250px";
     IO_obj.imgProgress = false;
 },
 error: function(xhr, status, error) {
