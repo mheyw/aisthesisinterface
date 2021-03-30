@@ -58,6 +58,8 @@ success: function(data){
     cameraOutput.style.right = "-250px";
     cameraOutput.classList.remove("taken");
     cameraOutput.src = "";
+    cameraOutput.style.left = "0";
+    cameraOutput.style.top = "0";
     // cameraOutput.classList.add("resetPos");
 },
 error: function(xhr, status, error) {
