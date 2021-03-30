@@ -55,6 +55,7 @@ success: function(data){
     console.log(data);
     IO_obj.imgProgress = false;
     cameraOutput.className = 'resetPos';
+    cameraOutput.src = "";
 },
 error: function(xhr, status, error) {
     console.log(xhr);
