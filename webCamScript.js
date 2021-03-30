@@ -56,7 +56,7 @@ success: function(data){
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
     // cameraOutput.remove();
-    // cameraOutput.classList.remove("taken");
+    cameraOutput.classList.add("success");
 
 },
 error: function(xhr, status, error) {
@@ -69,7 +69,6 @@ error: function(xhr, status, error) {
 
 // Take a picture when cameraTrigger is tapped
 cameraTrigger.onclick = function() {
-    cameraOutput.classList.remove("taken");
     cameraSensor.width = cameraView.videoWidth;
     cameraSensor.height = cameraView.videoHeight;
     cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
