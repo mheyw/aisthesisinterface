@@ -56,8 +56,7 @@ success: function(data){
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
-    cameraOutput.className = cameraOutput.className.replace(/\s*taken\s*/, ' resetPos ');
-    // cameraOutput.addClass("taken").removeClass("resetPos");
+    cameraOutput.className = cameraOutput.className.replace('taken','resetPos');
     cameraOutput.style.right = null;
     cameraOutput.src = "";
 },
@@ -76,7 +75,7 @@ cameraTrigger.onclick = function() {
     cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
     cameraOutput.src = cameraSensor.toDataURL("image/png");
     IO_obj.camImg = cameraOutput.src;
-    cameraOutput.classList.replace("resetPos","taken");
+    cameraOutput.className = cameraOutput.className.replace('resetPos','taken');
 
     //get date
     let current = new Date();
@@ -87,7 +86,7 @@ cameraTrigger.onclick = function() {
 
     let Latitude = IO_obj.gpsLat.toFixed(2);
     let Longitude = IO_obj.gpsLong.toFixed(2);
-    let Alpha = IO_obj.moAlpha.toFixed(0);
+    let Alpha = IO_obj.moAlpha.toFixed(0); 
     let Beta = IO_obj.moBeta.toFixed(0);
     let Gamma = IO_obj.moGamma.toFixed(0);
     let Time = current.toLocaleTimeString();
