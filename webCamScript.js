@@ -56,7 +56,8 @@ success: function(data){
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
-    cameraOutput.addClass("taken").removeClass("resetPos");
+    cameraOutput.className = cameraOutput.className.replace(/\s*taken\s*/, ' resetPos ');
+    // cameraOutput.addClass("taken").removeClass("resetPos");
     cameraOutput.style.right = null;
     cameraOutput.src = "";
 },
