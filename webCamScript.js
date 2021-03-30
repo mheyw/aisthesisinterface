@@ -34,6 +34,8 @@ function cameraStart() {
         console.error(error);
     });
 };
+//Utility for waiting...
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 function uploadFile(file, public_id) {
     $.ajax({
@@ -56,9 +58,12 @@ success: function(data){
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
-    cameraOutput.className = cameraOutput.className.replace('taken','resetPos');
-    cameraOutput.style.right = null;
-    cameraOutput.src = "";
+    const yourFunction = async () => {
+      await delay(500);
+      cameraOutput.className = cameraOutput.className.replace('taken','resetPos');
+      cameraOutput.style.right = null;
+      cameraOutput.src = "";
+  };
 },
 error: function(xhr, status, error) {
     console.log(xhr);
