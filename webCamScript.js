@@ -73,6 +73,7 @@ cameraTrigger.onclick = function() {
     cameraOutput.src = cameraSensor.toDataURL("image/png");
     IO_obj.camImg = cameraOutput.src;
     cameraOutput.className = 'taken';
+    document.getElementById("lds-roller").style.display = "inline-block";
 
     //get date
     let current = new Date();
