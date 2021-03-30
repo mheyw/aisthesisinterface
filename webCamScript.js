@@ -43,7 +43,7 @@ function uploadFile(file, public_id) {
     //Upload progress
     xhr.upload.addEventListener("progress", function(evt){
       IO_obj.imgProgress = true;
-      document.getElementById("camera--trigger").style.display = "none";
+      cameraTrigger.style.display = "none";
   }, false);
     return xhr;
 },
@@ -57,7 +57,10 @@ success: function(data){
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
     cameraOutput.classList.remove("taken");
-
+    cameraOutput.style.position = "fixed";
+    cameraOutput.style.height = "100%";
+    cameraOutput.style.width = "100%";
+    cameraOutput.style.object-fit = "cover";
 },
 error: function(xhr, status, error) {
     console.log(xhr);
