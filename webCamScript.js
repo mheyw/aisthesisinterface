@@ -57,6 +57,7 @@ success: function(data){
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
     cameraOutput.classList.remove("taken");
+    cameraOutput.src = "";
     // cameraOutput.classList.add("resetPos");
 },
 error: function(xhr, status, error) {
