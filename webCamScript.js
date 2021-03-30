@@ -54,6 +54,7 @@ data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  p
 success: function(data){
     console.log(data);
     IO_obj.imgProgress = false;
+    cameraOutput.className = 'resetPos';
 },
 error: function(xhr, status, error) {
     console.log(xhr);
