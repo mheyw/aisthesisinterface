@@ -56,11 +56,8 @@ success: function(data){
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
-    cameraOutput.classList.remove("taken");
+    cameraOutput.classList.replace("taken","resetPos");
     cameraOutput.src = "";
-    cameraOutput.style.left = "0";
-    cameraOutput.style.top = "0";
-    // cameraOutput.classList.add("resetPos");
 },
 error: function(xhr, status, error) {
     console.log(xhr);
@@ -77,7 +74,7 @@ cameraTrigger.onclick = function() {
     cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
     cameraOutput.src = cameraSensor.toDataURL("image/png");
     IO_obj.camImg = cameraOutput.src;
-    cameraOutput.classList.add("taken");
+    cameraOutput.classList.replace("resetPos","taken");
 
     //get date
     let current = new Date();
