@@ -22,18 +22,14 @@ function requestDeviceOrientation () {
 function processMotionData(){ 
 window.addEventListener("deviceorientation", function(event) {
     // alpha: rotation around z-axis
-    let rotateDegrees = event.alpha;
+    let _alpha = event.alpha;
     // gamma: left to right
-    let leftToRight = event.gamma;
+    let _gamma = event.gamma;
     // beta: front back motion
-    let frontToBack = event.beta;
+    let _beta = event.beta;
 
-    handleOrientationEvent(frontToBack, leftToRight, rotateDegrees);
+    IO_obj.moAlpha = _alpha;
+    IO_obj.moBeta = _beta;
+    IO_obj.moGamma = _gamma;
 }, true);
 }
-
-function handleOrientationEvent(frontToBack, leftToRight, rotateDegrees) {
-    IO_obj.moBeta = frontToBack;
-    IO_obj.moGamma = leftToRight;
-    IO_obj.moAlpha = rotateDegrees;
-};

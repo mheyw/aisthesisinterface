@@ -82,15 +82,15 @@ cameraTrigger.onclick = function() {
 
     let Latitude = IO_obj.gpsLat.toFixed(2);
     let Longitude = IO_obj.gpsLong.toFixed(2);
-    let Z = IO_obj.moAlpha.toFixed(0);
-    let X = IO_obj.moGamma.toFixed(0);
-    let Y = IO_obj.moBeta.toFixed(0);;
+    let Alpha = IO_obj.moAlpha.toFixed(0);
+    let Beta = IO_obj.moBeta.toFixed(0);
+    let Gamma = IO_obj.moGamma.toFixed(0);
     let Time = current.toLocaleTimeString();
     let ImgRef = fileID;
     $.ajax({
         type    : "POST",
         url     : "https://mothra.club",
-        data    : {'Latitude': Latitude,'Longitude': Longitude ,'Z':Z,'X':X,'Y': Y, 'Time': Time, 'ImgRef': ImgRef},
+        data    : {'Latitude': Latitude,'Longitude': Longitude ,'Alpha':Alpha,'Beta':Beta,'Gamma': Gamma, 'Time': Time, 'ImgRef': ImgRef},
         success: function(data){
             console.log(data);
         },
