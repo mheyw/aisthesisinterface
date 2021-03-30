@@ -56,7 +56,6 @@ success: function(data){
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
-    });
 },
 error: function(xhr, status, error) {
     console.log(xhr);
