@@ -56,12 +56,6 @@ success: function(data){
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
-    const el = document.querySelector('.taken');
-    el.addEventListener('transitionend', function() {
-        console.log("onTransition End Triggered!")
-        cameraOutput.className = 'resetPos';
-        cameraOutput.style.right = null;
-        cameraOutput.src = "";
     });
 },
 error: function(xhr, status, error) {

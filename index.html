@@ -65,6 +65,9 @@
                         //check if img is being uploaded
                         if(IO_obj.imgProgress == false){
                             document.getElementById("camera--trigger").style.display = "block";
+                            document.getElementById("camera--output").className = 'resetPos';
+                            document.getElementById("camera--output").style.right = null;
+                            document.getElementById("camera--output").src = "";
                         }
                         document.getElementById("status").style.display = "block";
                         const status = document.querySelector('#status');
