@@ -60,8 +60,9 @@ success: function(data){
     cameraOutput.style.right = "-250px";
     const yourFunction = async () => {
       await delay(500);
+      console.log("waited 0.5s");
       cameraOutput.className = 'resetPos';
-      cameraOutput.style.right = null;
+      //cameraOutput.style.right = null;
       cameraOutput.src = "";
   };
 },
