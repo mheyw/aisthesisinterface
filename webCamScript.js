@@ -57,9 +57,7 @@ success: function(data){
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
     cameraOutput.classList.remove("taken");
-    cameraOutput.style.position = "fixed";
-    cameraOutput.style.height = "100%";
-    cameraOutput.style.width = "100%";
+    cameraOutput.classList.add("resetPos");
 },
 error: function(xhr, status, error) {
     console.log(xhr);
