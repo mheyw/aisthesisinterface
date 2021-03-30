@@ -60,7 +60,7 @@ success: function(data){
     cameraOutput.style.right = "-250px";
     const yourFunction = async () => {
       await delay(500);
-      cameraOutput.className = cameraOutput.className.replace('taken','resetPos');
+      cameraOutput.className = 'resetPos';
       cameraOutput.style.right = null;
       cameraOutput.src = "";
   };
@@ -80,7 +80,7 @@ cameraTrigger.onclick = function() {
     cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
     cameraOutput.src = cameraSensor.toDataURL("image/png");
     IO_obj.camImg = cameraOutput.src;
-    cameraOutput.className = cameraOutput.className.replace('resetPos','taken');
+    cameraOutput.className = 'taken';
 
     //get date
     let current = new Date();
