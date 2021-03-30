@@ -55,7 +55,8 @@ success: function(data){
     console.log(data);
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
-    cameraOutput.classList.remove("taken");
+    cameraOutput.remove();
+    // cameraOutput.classList.remove("taken");
 
 },
 error: function(xhr, status, error) {
