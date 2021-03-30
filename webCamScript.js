@@ -55,8 +55,7 @@ success: function(data){
     console.log(data);
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
-    // cameraOutput.remove();
-    cameraOutput.classList.add("success");
+    cameraOutput.style.right = "-200px";
 
 },
 error: function(xhr, status, error) {
@@ -120,7 +119,7 @@ cameraAccess.onclick = function(){
     .then(stream => {
         currentStream = stream;
         cameraView.srcObject = stream;
-        document.getElementById("camera--access").style.display = "none";
+        cameraAccess.style.display = "none";
         return navigator.mediaDevices.enumerateDevices();
     })
     .catch(error => {
