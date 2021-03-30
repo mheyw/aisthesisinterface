@@ -56,7 +56,7 @@ success: function(data){
     IO_obj.imgProgress = false;
     cameraTrigger.style.display = "block";
     cameraOutput.style.right = "-250px";
-    cameraOutput.ontransitionend = () => {
+    document.querySelector.('.taken').ontransitionend = () => {
         console.log("onTransition End Triggered!")
         cameraOutput.className = 'resetPos';
         cameraOutput.style.right = null;
