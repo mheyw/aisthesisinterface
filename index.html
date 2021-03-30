@@ -33,6 +33,7 @@
             <button class="roundedButton" id="camera--access" style="bottom:500px;">Allow Camera Access</button>
             <button class="roundedButton" id="location--access" style="bottom:400px;">Allow Location Access</button>
             <button class="roundedButton" id="motion--access" style="bottom:300px;">Allow Motion Access</button>
+            <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             <p id="status"></p>
             <script>
                 function begin(){
@@ -60,11 +61,15 @@
                     if(IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
                         document.getElementById("motion--access").style.display = "none";
                     };
+                    if(IO_obj.imgProgress == true){
+                        document.getElementById("lds-roller").style.display = "inline-block";
+                    }
                     //if everything is available allow image capture
                     if(IO_obj.gpsLat !== null && IO_obj.gpsLat !== undefined && IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
                         //check if img is being uploaded
                         if(IO_obj.imgProgress == false){
                             document.getElementById("camera--trigger").style.display = "block";
+                            document.getElementById("lds-roller").style.display = "none";
                         }
                         document.getElementById("status").style.display = "block";
                         const status = document.querySelector('#status');
