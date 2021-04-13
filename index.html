@@ -1,94 +1,454 @@
-<html lang=”en”>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Aisthesis Interface</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
-        <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <div id="welcome">
-            <tt>Aisthesis Interface</tt><br><br>
-            <p>Aisthesis as an ontological difference between two orders of reality</p>
-            <p>Interface as the technique of mediation</p><br>
-            <p-s>This website collects location data, motion data and images to generate spatialised images for the purpose of an art project.</p-s><br><br>
-            <p-s>Any images you take may be used within an art piece that will be made using the data collected.</p-s><br><br>
-            <p-s>By using this site you agree to the use of any images or data collected.</p-s><br><br>
-            <p-s> All information collected is anonymous, is only collected when an image is taken and will only be stored for the duration of the project.</p-s><br><br>
-            <p-s>Once you press begin you will be asked for permission to use your camera, location and motion data.</p-s>
-            <p><br><br><br></p>
-            <button class="roundedButton" id="begin" style="bottom: 30px; width:100px; left: calc(50% - 50px);" onclick="begin()">Begin</button>
-        </div>
-        <!-- Camera -->
-        <main id="camera">
-            <!-- Camera sensor -->
-            <canvas id="camera--sensor"></canvas>
-            <!-- Camera view -->
-            <video id="camera--view" muted autoplay playsinline ></video>
-            <!-- Camera output -->
-            <img src="//:0" alt="" id="camera--output" class="resetPos">
-            <!-- Camera trigger -->
-            <button id="camera--trigger">Take a picture</button>
-            <button class="roundedButton" id="camera--access" style="bottom:500px;">Allow Camera Access</button>
-            <button class="roundedButton" id="location--access" style="bottom:400px;">Allow Location Access</button>
-            <button class="roundedButton" id="motion--access" style="bottom:300px;">Allow Motion Access</button>
-            <div class="loading">
-            <div class="lds-roller" id="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
-            <p id="status"></p>
-            <script>
-                function begin(){
-                    document.getElementById("welcome").style.display = "none";
-                }
-                
-                let IO_obj = {
-                    camImg: '',
-                    gpsLat: null,
-                    gpsLong: null,
-                    moAlpha: null,
-                    moGamma: null,
-                    moBeta: null,
-                    imgProgress: false
-                };
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Aisthesis Interface</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="main.css">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#000000">
+	<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="crossorigin="anonymous"></script>
+</head>
+<body>
+	<div id="overlay">
+		<img src="AIlogo.png" alt="Aisthesis Interface Logo" class="AIMainLogo"></img>
+		<div class="mobInfo">
+			<p>Aisthesis as an ontological difference between two orders of reality</p>
+			<p>Interface as the technique of mediation</p>
+			<p>This website collects location data, motion data and images to generate spatialised images for the purpose of an art project.</p>
+			<p>Any images you take may be used within an art piece that will be made using the data collected.</p>
+			<p>By using this site you agree to the use of any images or data collected.</p>
+			<p> All information collected is anonymous, is only collected when an image is taken and will only be stored for the duration of the project.</p>
+			<p>Once you press enter you will be asked for permission to use your motion data.</p>
+		</div>
+		<br/>
+		<button id="startButton">Enter</button>
+	</div>
+	<div class="lhTxt" id="lhTxt">
+		<div class="infoContent"><p>Aisthesis as an ontological difference between two orders of reality</p><p>Interface as the technique of mediation</p><p>Continued...</p>
+		</div>
+	</div>
+	<div class="rhTxt" id="rhTxt">
+		<div class="infoContent">
+			<p>For the best experience view this on your mobile device using the QR code below</p>
+			<img src="QR.png" alt="QR code" class="qr">
+		</div>
+	</div>
+	<div class="addIcon" id="addIcon">
+		<img src="addIcon.png" alt="Add Image" role="button" style="width:100%; height:100%;"></img>
+	</div>
+	<div id="camera">
+		<!-- Camera sensor -->
+		<canvas id="camera--sensor"></canvas>
+		<!-- Camera view -->
+		<video id="camera--view" muted autoplay playsinline ></video>
+		<!-- Camera output -->
+		<img src="//:0" alt="" id="camera--output" class="resetPos">
+		<!-- Camera trigger -->
+		<button id="camera--trigger">Take a picture</button>
+		<div class="loading">
+			<div class="lds-roller" id="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+		</div>
+		<script type="module">
 
-                document.getElementById("camera--trigger").style.display = "none";
+			import * as THREE from '/build/three.module.js';
 
-                function loop(timestamp) {
-                    //if geolocation available remove button
-                    if(IO_obj.gpsLat !== null && IO_obj.gpsLat !== undefined){
-                        document.getElementById("location--access").style.display = "none";
-                    };
-                    //if motion data available remove button
-                    if(IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
-                        document.getElementById("motion--access").style.display = "none";
-                    };
-                    if(IO_obj.imgProgress == true){
+			import { DeviceOrientationControls } from '/DeviceOrientationControls.js';
+
+			import {inData} from '/metadata.js';
+
+			let camera, scene, renderer, controls, pivot;
+		//media query for different settings on mobile
+		const mQ = 650
+		//variables for mouse interaction
+		var mouseDown = false, mouseX = 0, mouseY = 0, lastKnownScrollPosition = 0, ticking = false;
+		//Object for motion data
+		var IO_obj = {
+			camImg: '',
+			moAlpha: null,
+			moGamma: null,
+			moBeta: null,
+			imgProgress: false
+		};
+		let images = [];
+		for(let i = 0; i < inData.length; i++){
+			images.push(new THREE.TextureLoader().load("uploads/"+inData[i].ImgRef+".png"));
+		}
+
+		const startButton = document.getElementById( 'startButton' );
+		startButton.addEventListener('click', function(){
+			init();
+			animate();
+		});
+
+		function init() {
+			if(window.innerWidth > mQ){
+				document.getElementById('lhTxt').style.display="block";
+				document.getElementById('rhTxt').style.display="block";
+			}
+			const overlay = document.getElementById('overlay');
+			overlay.remove();
+
+			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 5000 );
+			controls = new DeviceOrientationControls(camera);
+
+			if(window.innerWidth > mQ){
+				controls.enabled = false;
+				camera.rotation.y = 90 * Math.PI / 180;
+				camera.position.x = 200;
+			}
+
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0x000000 );
+
+			addPlane();
+
+			let planes = [];
+			let materials = [];
+			let meshes = [];
+			for(let i = 0; i < inData.length; i++){
+				if(window.innerWidth > mQ){
+					planes.push(new THREE.PlaneGeometry(240/10,320/10,2,2));
+					materials.push(new THREE.MeshBasicMaterial( {map: images[i], side: THREE.BackSide} ));
+					meshes.push(new THREE.Mesh(planes[i], materials[i]));
+					scene.add(meshes[i]);
+					meshes[i].rotateY(-inData[i].Alpha*(Math.PI/180));
+					meshes[i].rotateX(THREE.Math.mapLinear(((inData[i].Beta)-90),90,-90,-90,90)*(Math.PI/180));
+					meshes[i].translateZ(100);
+				}else{
+					planes.push(new THREE.PlaneGeometry(240/20,320/20,2,2));
+					materials.push(new THREE.MeshBasicMaterial( {map: images[i], side: THREE.DoubleSide} ));
+					meshes.push(new THREE.Mesh(planes[i], materials[i]));
+					scene.add(meshes[i]);
+					meshes[i].rotateY(-inData[i].Alpha*(Math.PI/180));
+					meshes[i].rotateX(THREE.Math.mapLinear(((inData[i].Beta)-90),90,-90,-90,90)*(Math.PI/180));
+					meshes[i].translateZ(50);
+				}
+			}
+			//Group images into pivot for mouse interaction/rotation
+			pivot = new THREE.Group();
+			pivot.position.set( 0.0, 0.0, 0 );
+			for(let i = 0; i < inData.length; i++){
+				pivot.add(meshes[i]);
+			}
+			scene.add(pivot);
+			//Add Light
+			const light = new THREE.AmbientLight(0x404040); // soft white light
+			scene.add(light);
+			//rendering
+			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize(window.innerWidth, window.innerHeight );
+			//Add three.js DOM element to HTML
+			document.body.appendChild( renderer.domElement );
+			//Window resize
+			window.addEventListener( 'resize', onWindowResize );
+			//Mouse Events only on desktop
+			if(window.innerWidth > mQ){
+				window.addEventListener('mousemove', function (e) {
+					onMouseMove(e);
+				}, false);
+				window.addEventListener('mousedown', function (e) {
+					onMouseDown(e);
+				}, false);
+				window.addEventListener('mouseup', function (e) {
+					onMouseUp(e);
+				}, false);
+			//Move Camera on mouse Scroll
+			window.addEventListener('wheel', function(e) {
+				let direction = e.deltaY
+
+				if (direction < 0) {
+					//Scrolling Up
+					if(camera.position.x > 10){
+						camera.position.x -= 10}
+					}else{
+						//Scrolling Down
+						if(camera.position.x < 200){
+							camera.position.x += 10}
+						}
+					})
+		}
+	}
+	function animate() {
+		if(window.innerWidth > mQ){
+			pivot.rotation.y += 0.002;
+		}
+		window.requestAnimationFrame(animate);
+		controls.update();
+		renderer.render(scene,camera);
+
+		if(IO_obj.imgProgress == true){
                         document.getElementById("lds-roller").style.display = "inline-block";
                     }
-                    //if everything is available allow image capture
-                    if(IO_obj.gpsLat !== null && IO_obj.gpsLat !== undefined && IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
-                        //check if img is being uploaded
-                        if(IO_obj.imgProgress == false){
-                            document.getElementById("camera--trigger").style.display = "block";
-                            document.getElementById("lds-roller").style.display = "none";
-                        }
-                        document.getElementById("status").style.display = "block";
-                        const status = document.querySelector('#status');
-                        status.textContent = IO_obj.gpsLat.toFixed(2) + '\r\n' +  IO_obj.gpsLong.toFixed(2) + '\r\n' + 
-                            IO_obj.moAlpha.toFixed(0) + '\r\n' + 
-                            IO_obj.moBeta.toFixed(0) + '\r\n' + 
-                            IO_obj.moGamma.toFixed(0);
-                    }
+		//if everything is available allow image capture
+		if(IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
+            //check if img is being uploaded
+            if(IO_obj.imgProgress == false){
+            	document.getElementById("camera--trigger").style.display = "block";
+            	document.getElementById("lds-roller").style.display = "none";
+            }
+        }
+    }
+		//Resize handler
+		function onWindowResize() {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+		}
+		//Vertex shader
+		function vertexShader() {
+			return `
+			varying vec3 vUv; 
+			varying vec4 modelViewPosition; 
+			varying vec3 vecNormal;
+			void main() {
+				vUv = position; 
+				vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+				vecNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz;
+				gl_Position = projectionMatrix * modelViewPosition; 
+			}
+			`
+		}
+		//Fragment shader
+		function fragmentShader() {
+			return `
+			varying vec3 vUv;
+			vec4 col;
+			void main() {
+				// draw vertical lines
+				float stripeVal = floor( mod(vUv.z, 60.0) ) == 0.0  ? 1.0 : 0.0;
+				if(stripeVal == 0.){
+					col = vec4(0.,0.,0.,0.);
+				}else{
+					col = vec4(1.,1.,1.,1.);
+				}
+				gl_FragColor = col;
+			}
+			`
+		}
+		//Add ground plane with custom GLSL shader material
+		function addPlane() {
+			const geometry = new THREE.BoxGeometry(2500,1,2500);
+			let material =  new THREE.ShaderMaterial({
+				fragmentShader: fragmentShader(),
+				vertexShader: vertexShader()
+			})
+			material.transparent = true;
+			let mesh = new THREE.Mesh(geometry, material)
+			if(window.innerWidth > mQ){
+				//desktop
+				mesh.position.y = -140
+			}else{
+				//mobile
+				mesh.position.y = -240
+			}
+			mesh.position.y = -140
+			scene.add(mesh)
+		}
 
-                    lastRender = timestamp;
-                    window.requestAnimationFrame(loop);
-                }
-                let lastRender = 0;
-                window.requestAnimationFrame(loop);
-            </script>
-        </main>
-        <script src="webCamScript.js"></script>
-        <script src="gpsScript.js"></script>
-        <script src="motionScript.js"></script>
-    </body>
+		// EVENTS
+		function onMouseMove(evt) {
+			if (!mouseDown) {
+				return;
+			}
+
+			evt.preventDefault();
+
+			var deltaX = evt.clientX - mouseX,
+			deltaY = evt.clientY - mouseY;
+			mouseX = evt.clientX;
+			mouseY = evt.clientY;
+			rotateScene(deltaX, deltaY);
+		}
+
+		function onMouseDown(evt) {
+			evt.preventDefault();
+
+			mouseDown = true;
+			mouseX = evt.clientX;
+			mouseY = evt.clientY;
+		}
+
+		function onMouseUp(evt) {
+			evt.preventDefault();
+
+			mouseDown = false;
+		}
+		function rotateScene(deltaX, deltaY) {
+			pivot.rotation.y -= deltaX / 200;
+			pivot.rotation.z += deltaY / 200;
+		}
+
+		//IMAGE TAKING
+		const imageButton = document.getElementById('addIcon');
+		imageButton.addEventListener('click', function(){
+			document.getElementById("camera").style.display = "block";
+		});
+
+		document.querySelector('#addIcon').addEventListener('click', requestDeviceOrientation);
+
+		function requestDeviceOrientation () {
+			if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+				DeviceOrientationEvent.requestPermission()
+				.then(permissionState => {
+					if (permissionState === 'granted') {
+						processMotionData();
+					}
+				})
+				.catch(console.error);
+			} else {
+				// handle regular non iOS 13+ devices
+				processMotionData();
+			}
+		}
+		function processMotionData(){ 
+			window.addEventListener("deviceorientation", function(event) {
+			    // alpha: rotation around z-axis
+			    let _alpha = event.alpha;
+			    // gamma: left to right
+			    let _gamma = event.gamma;
+			    // beta: front back motion
+			    let _beta = event.beta;
+
+			    IO_obj.moAlpha = _alpha;
+			    IO_obj.moBeta = _beta;
+			    IO_obj.moGamma = _gamma;
+			}, true);
+		}
+		// Define constants
+		const cameraView = document.querySelector("#camera--view"),
+		cameraOutput = document.querySelector("#camera--output"),
+		cameraSensor = document.querySelector("#camera--sensor"),
+		cameraTrigger = document.querySelector("#camera--trigger"),
+		cameraAccess = document.querySelector("#addIcon");
+
+		let currentStream;
+
+		function stopMediaTracks(stream) {
+			stream.getTracks().forEach(track => {
+				track.stop();
+			});
+		}
+
+		function cameraStart() {
+			if (typeof currentStream !== 'undefined') {
+				stopMediaTracks(currentStream);
+			}
+			const videoConstraints = {};
+			videoConstraints.facingMode = 'environment' || 'user';
+			const constraints = {
+				video: videoConstraints,
+				audio: false
+			};
+			navigator.mediaDevices
+			.getUserMedia(constraints)
+			.then(stream => {
+				currentStream = stream;
+				cameraView.srcObject = stream;
+				return navigator.mediaDevices.enumerateDevices();
+			})
+			.catch(error => {
+				console.error(error);
+			});
+		};
+
+		function uploadFile(file, public_id) {
+			$.ajax({
+				xhr: function()
+				{
+					let xhr = new window.XMLHttpRequest();
+				    //Upload progress
+				    xhr.upload.addEventListener("progress", function(evt){
+				    	IO_obj.imgProgress = true;
+				    	cameraTrigger.style.display = "none";
+				    }, false);
+				    return xhr;
+				},
+				type    : "POST",
+				url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
+				beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
+				data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
+				success: function(data){
+					console.log(data);
+					IO_obj.imgProgress = false;
+					cameraOutput.className = 'resetPos';
+					cameraOutput.src = "";
+					document.getElementById("camera").style.display = "none";
+					document.getElementById("addIcon").style.display = "block";
+				},
+				error: function(xhr, status, error) {
+					console.log(xhr);
+					console.log(status);
+					console.log(error);
+				}
+				});
+			}
+
+			// Take a picture when cameraTrigger is tapped
+			cameraTrigger.onclick = function() {
+				cameraSensor.width = cameraView.videoWidth;
+				cameraSensor.height = cameraView.videoHeight;
+				cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
+				cameraOutput.src = cameraSensor.toDataURL("image/png");
+				IO_obj.camImg = cameraOutput.src;
+				cameraOutput.className = 'taken';
+
+			    //get date
+			    let current = new Date();
+			    //file id
+			    let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+			    uploadFile(IO_obj.camImg, fileID);
+
+			    let Alpha = IO_obj.moAlpha.toFixed(0); 
+			    let Beta = IO_obj.moBeta.toFixed(0);
+			    let Gamma = IO_obj.moGamma.toFixed(0);
+			    let Time = current.toLocaleTimeString();
+			    let ImgRef = fileID;
+			    $.ajax({
+			    	type    : "POST",
+			    	url     : "https://mothra.club",
+			    	data    : {'Alpha':Alpha,'Beta':Beta,'Gamma': Gamma, 'Time': Time, 'ImgRef': ImgRef},
+			    	success: function(data){
+			    		console.log(data);
+			    	},
+			    	error: function(xhr, status, error) {
+			    		console.log(xhr);
+			    		console.log(status);
+			    		console.log(error);
+			    	}
+			    });
+			};
+
+			cameraAccess.onclick = function(){
+				if (typeof currentStream !== 'undefined') {
+					stopMediaTracks(currentStream);
+				}
+				const videoConstraints = {};
+				videoConstraints.facingMode = 'environment' || 'user';
+				const constraints = {
+					video: videoConstraints,
+					audio: false
+				};
+				navigator.mediaDevices
+				.getUserMedia(constraints)
+				.then(stream => {
+					currentStream = stream;
+					cameraView.srcObject = stream;
+					cameraAccess.style.display = "none";
+					return navigator.mediaDevices.enumerateDevices();
+				})
+				.catch(error => {
+					console.log("Permission Denied By User!");
+					document.getElementById("camera").style.display = "none";
+				});
+			};
+</script>
+</body>
 </html>

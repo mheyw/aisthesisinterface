@@ -1,43 +1,179 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,600;1,300&display=swap');
+html {
+    background-color: black;
+}
 
-html, body{
+body {
+    margin: 0;
+    background-color: #000;
+    color: #fff;
+    font-family: Monospace;
+    font-size: 13px;
+    line-height: 24px;
+    overscroll-behavior: none;
+}
+
+a {
+    color: #ff0;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+a, button, input, select {
+    pointer-events: auto;
+}
+/*Viewing Style*/
+.dg.ac {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 2 !important; /* TODO Solve this in HTML */
+}
+p{
+    font-size:20px;
+}
+
+.lhTxt{
+    margin: auto;
+    width: 20vw;
+    height: 80vh;
+    border-width: 0;
+    border-right: 5px solid;
+    border-image: linear-gradient(#000, #FFF, #000) 0 100% 0;
+    position: absolute;
+    padding: 20px;
+    top:0;
+    bottom: 0;
+    left: 30px;
+    display: none;
+}
+.rhTxt{
+    margin: auto;
+    width: 20vw;
+    height: 80vh;
+    padding: 20px;
+    border-width: 0;
+    border-left: 5px solid;
+    border-image: linear-gradient(#000, #FFF, #000) 0 100% 0;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    right: 30px;
+    display: none;
+}
+
+.infoContent{
     margin: 0;
     padding: 0;
-    height: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.AIMainLogo{
+    width: 80vw;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.addIcon{
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: none;
+    margin: 20px;
+    width: 50px;
+    height: 50px;
+}
+
+.qr{
+    width:60%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 60px;
+}
+
+#overlay {
+    margin: 0;
+    font-size: 16px;
+    z-index: 3;
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 100%;
-    background-color: black;
-}
-#welcome{
-    font-family: 'Open Sans', sans-serif;
-    position: absolute; 
+    height: auto;
+    transform: translate(-50%, -50%);
     text-align: center;
-    top: 0; 
-    right: 0; 
-    bottom: 0; 
-    left: 0;
-    background-color: black;
-    z-index: 1;
-    padding: 2em;
-}
-tt {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 2.1em;
-    border-bottom: 2px solid white;
-    padding-bottom: 5px;
-    font-weight: 600;
-    color: white;
+    background: rgb(0,0,0);
 }
 
-p {
-    font-weight: 300;
-    font-size: 1.1em;
-    color: white;
+#overlay button {
+    background: transparent;
+    border: 0;
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 4px;
+    color: #ffffff;
+    padding: 12px 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 10vw;
+    margin-top: 5vh;
 }
 
-p-s {
-    font-weight: 300;
-    font-size: 0.9em;
-    color: white
+#notSupported {
+    width: 50%;
+    margin: auto;
+    background-color: #f00;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.mobInfo{
+    display: none;
+    text-align: center;
+    padding: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+    .AIMainLogo{
+        top: 0;
+        margin-top: 15px;
+        width: 90vw;
+    }
+    .addIcon{
+        display: block;
+    }
+    #overlay{
+        height: 100%;
+    }
+
+    #overlay button {
+        width: 100px;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    .mobInfo{
+        display: block;
+    }
+    .lhTxt{
+        display: none;
+    }
+    .rhTxt{
+        display: none;
+    }
+}
+/*Image taking Style*/
+#camera{
+    display: none;
 }
 
 #camera, #camera--view, #camera--sensor, #camera--output{
@@ -90,22 +226,6 @@ p-s {
     pointer-events: auto;
 }
 
-#status{
-    display: none;
-    width: 50px;
-    white-space: pre;
-    background-color: black;
-    color: white;
-    font-size: 16px;
-    border-radius: 30px;
-    border: none;
-    padding: 15px 20px;
-    text-align: center;
-    box-shadow: 0 0 0 2pt rgba(255,255,255,1);
-    position: fixed;
-    top: 3%;
-    left: 3%;
-}
 .taken{
     height: 100px!important;
     width: 100px!important;
