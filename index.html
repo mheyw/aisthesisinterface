@@ -204,7 +204,8 @@
 		//Vertex shader
 		function vertexShader() {
 			return `
-			varying vec3 vUv; 
+			varying vec3 vUv;  
+			varying vec3 vecNormal;
 			void main() {
 				vUv = position; 
 				vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
