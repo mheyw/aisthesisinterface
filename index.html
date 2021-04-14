@@ -345,6 +345,7 @@
 				document.getElementById("camera").style.display = "block";
 				//Process device orientation when taking an image
 				processMotionData();
+				document.getElementById('addIcon').style.display = "none";
 			}
 		});
 
@@ -467,7 +468,6 @@
 			};
 			//Start webRTC context
 			cameraAccess.onclick = function(){
-				if(IO_obj.imgProgress == false){
 				if (typeof currentStream !== 'undefined') {
 					stopMediaTracks(currentStream);
 				}
@@ -483,14 +483,12 @@
 				.then(stream => {
 					currentStream = stream;
 					cameraView.srcObject = stream;
-					cameraAccess.style.display = "none";
 					return navigator.mediaDevices.enumerateDevices();
 				})
 				.catch(error => {
 					console.log("Permission Denied By User!");
 					document.getElementById("camera").style.display = "none";
 					});
-				}
 			};
 		}).catch(err => console.error(err));
 	</script>
