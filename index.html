@@ -87,6 +87,11 @@
 					imgProgress: false
 				};
 
+				//Create arrays for user data generated content
+				let planes = [];
+				let materials = [];
+				let meshes = [];
+
 				//load images from CDN into array
 				let images = [];
 				for(let i = 0; i < inData.length; i++){
@@ -130,10 +135,6 @@
 					//add ground plane with custom GLSL shader
 					addPlane();
 
-					//Create arrays for user data generated content
-					let planes = [];
-					let materials = [];
-					let meshes = [];
 					//for every entry in JSON
 					for(let i = 0; i < inData.length; i++){
 						//if on desktop position planes further away and change face of texture so you can see into the orb of images through backface culling - else on mobile position planes closer and texture both sides of plane
@@ -433,6 +434,7 @@
 				    	data    : {'Alpha':Alpha,'Beta':Beta,'Gamma': Gamma, 'Time': Time, 'ImgRef': ImgRef},
 				    	success: function(data){
 				    		// console.log(data);
+				    		//Add image taken to local instance to see immediately
 				    		images.push(new THREE.TextureLoader().load(IO_obj.camImg));
 				    		//create new plane
 							planes.push(new THREE.PlaneGeometry(12,16,2,2));
