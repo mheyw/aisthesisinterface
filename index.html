@@ -96,6 +96,8 @@
 			let images = [];
 			for(let i = 0; i < inData.length; i++){
 				images.push(new THREE.TextureLoader().load("https://res.cloudinary.com/dbl3jetzn/image/upload/v1618331237/uploads/"+inData[i].ImgRef+".png"));
+				images[i].wrapS = THREE.RepeatWrapping;
+				images[i].repeat.x = - 1;
 			}
 
 			//Start three js context on button press
