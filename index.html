@@ -326,7 +326,7 @@
 
 				mouseDown = false;
 			}
-			
+
 			//rotate pivot group based on mouse position
 			function rotateScene(deltaX, deltaY) {
 				pivot.rotation.y -= deltaX / 200;
@@ -433,6 +433,19 @@
 				    	data    : {'Alpha':Alpha,'Beta':Beta,'Gamma': Gamma, 'Time': Time, 'ImgRef': ImgRef},
 				    	success: function(data){
 				    		// console.log(data);
+				    		images.push(new THREE.TextureLoader().load(IO_obj.camImg));
+				    		//create new plane
+							planes.push(new THREE.PlaneGeometry(12,16,2,2));
+							//create material using image data
+							materials.push(new THREE.MeshBasicMaterial( {map: images[images.length-1], side: THREE.DoubleSide} ));
+							//create mesh from plane and material
+							meshes.push(new THREE.Mesh(planes[planes.length-1], materials[materials.length-1]));
+							//add mesh to scene
+							scene.add(meshes[meshes.length-1]);
+							//rotate and position mesh based on user data
+							meshes[i].rotateY(-Alpha*(Math.PI/180));
+							meshes[i].rotateX(THREE.Math.mapLinear(((Beta)-90),90,-90,-90,90)*(Math.PI/180));
+							meshes[i].translateZ(50);
 				    	},
 				    	error: function(xhr, status, error) {
 				    		console.log(xhr);
