@@ -57,13 +57,14 @@
 		<script type="module">
 			//import three JS
 			import * as THREE from '/build/three.module.js';
+
 			//import mobile device control & orientation
 			import { DeviceOrientationControls } from '/DeviceOrientationControls.js';
-			//fetch metadata from LAMP stack
+
+			//fetch metadata from LAMP stack, on success run three js app so everything is loaded before viewing
 			fetch('https://mothra.club/server/apis/user.php')
 			.then(res => res.json())
 			.then((out) => {
-				//On success run three js app
 
 				//put resonse from fetch into constant
 				const inData = out.data;
@@ -101,44 +102,64 @@
 
 				//setup for three js app
 				function init() {
+					//on desktop display infomation
 					if(window.innerWidth > mQ){
 						document.getElementById('lhTxt').style.display="block";
 						document.getElementById('rhTxt').style.display="block";
 					}
+
+					//on loading three js app delete statup overlap
 					const overlay = document.getElementById('overlay');
 					overlay.remove();
 
+					//define camera and control
 					camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 5000 );
 					controls = new DeviceOrientationControls(camera);
 
+					//on desktop position camera away from center for 3rd person view
 					if(window.innerWidth > mQ){
 						controls.enabled = false;
 						camera.rotation.y = 90 * Math.PI / 180;
 						camera.position.x = 200;
 					}
 
+					//create three js scene
 					scene = new THREE.Scene();
 					scene.background = new THREE.Color( 0x000000 );
 
+					//add ground plane with custom GLSL shader
 					addPlane();
 
+					//Create arrays for user data generated content
 					let planes = [];
 					let materials = [];
 					let meshes = [];
+					//for every entry in JSON
 					for(let i = 0; i < inData.length; i++){
+						//if on desktop position planes further away and change face of texture so you can see into the orb of images through backface culling - else on mobile position planes closer and texture both sides of plane
 						if(window.innerWidth > mQ){
-							planes.push(new THREE.PlaneGeometry(240/10,320/10,2,2));
+							//create new plane
+							planes.push(new THREE.PlaneGeometry(24,32,2,2));
+							//create material using image data
 							materials.push(new THREE.MeshBasicMaterial( {map: images[i], side: THREE.BackSide} ));
+							//create mesh from plane and material
 							meshes.push(new THREE.Mesh(planes[i], materials[i]));
+							//add mesh to scene
 							scene.add(meshes[i]);
+							//rotate and position mesh based on user data
 							meshes[i].rotateY(-inData[i].Alpha*(Math.PI/180));
 							meshes[i].rotateX(THREE.Math.mapLinear(((inData[i].Beta)-90),90,-90,-90,90)*(Math.PI/180));
 							meshes[i].translateZ(100);
 						}else{
-							planes.push(new THREE.PlaneGeometry(240/20,320/20,2,2));
+							//create new plane
+							planes.push(new THREE.PlaneGeometry(12,16,2,2));
+							//create material using image data
 							materials.push(new THREE.MeshBasicMaterial( {map: images[i], side: THREE.DoubleSide} ));
+							//create mesh from plane and material
 							meshes.push(new THREE.Mesh(planes[i], materials[i]));
+							//add mesh to scene
 							scene.add(meshes[i]);
+							//rotate and position mesh based on user data
 							meshes[i].rotateY(-inData[i].Alpha*(Math.PI/180));
 							meshes[i].rotateX(THREE.Math.mapLinear(((inData[i].Beta)-90),90,-90,-90,90)*(Math.PI/180));
 							meshes[i].translateZ(50);
@@ -150,6 +171,7 @@
 					for(let i = 0; i < inData.length; i++){
 						pivot.add(meshes[i]);
 					}
+					//add group to scene
 					scene.add(pivot);
 					//Add Light
 					const light = new THREE.AmbientLight(0x404040); // soft white light
@@ -160,7 +182,7 @@
 					renderer.setSize(window.innerWidth, window.innerHeight );
 					//Add three.js DOM element to HTML
 					document.body.appendChild( renderer.domElement );
-					//Window resize
+					//Window resize handler
 					window.addEventListener( 'resize', onWindowResize );
 					//Mouse Events only on desktop
 					if(window.innerWidth > mQ){
@@ -189,6 +211,7 @@
 							})
 				}
 			}
+			//Update function
 			function animate() {
 				//On desktop rotate group of images
 				if(window.innerWidth > mQ){
@@ -210,229 +233,239 @@
 		            }
 		        }
 		    }
-				//Resize handler
-				function onWindowResize() {
-					camera.aspect = window.innerWidth / window.innerHeight;
-					camera.updateProjectionMatrix();
-					renderer.setSize( window.innerWidth, window.innerHeight );
+			//Resize handler
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+			//Vertex shader
+			function vertexShader() {
+				return `
+				varying vec3 vUv; 
+				varying vec4 modelViewPosition; 
+				varying vec3 vecNormal;
+				void main() {
+					vUv = position; 
+					vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+					vecNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz;
+					gl_Position = projectionMatrix * modelViewPosition; 
 				}
-				//Vertex shader
-				function vertexShader() {
-					return `
-					varying vec3 vUv; 
-					varying vec4 modelViewPosition; 
-					varying vec3 vecNormal;
-					void main() {
-						vUv = position; 
-						vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-						vecNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz;
-						gl_Position = projectionMatrix * modelViewPosition; 
-					}
-					`
-				}
-				//Fragment shader
-				function fragmentShader() {
-					return `
-					varying vec3 vUv;
-					vec4 col;
-					void main() {
-						// draw vertical lines
-						float stripeVal = floor( mod(vUv.z, 60.0) ) == 0.0  ? 1.0 : 0.0;
-						if(stripeVal == 0.){
-							col = vec4(0.,0.,0.,0.);
-						}else{
-							col = vec4(1.,1.,1.,1.);
-						}
-						gl_FragColor = col;
-					}
-					`
-				}
-				//Add ground plane with custom GLSL shader material
-				function addPlane() {
-					const geometry = new THREE.BoxGeometry(2500,1,2500);
-					let material =  new THREE.ShaderMaterial({
-						fragmentShader: fragmentShader(),
-						vertexShader: vertexShader()
-					})
-					material.transparent = true;
-					let mesh = new THREE.Mesh(geometry, material)
-					if(window.innerWidth > mQ){
-						//desktop
-						mesh.position.y = -140
+				`
+			}
+			//Fragment shader to draw vertical lines
+			function fragmentShader() {
+				return `
+				varying vec3 vUv;
+				vec4 col;
+				void main() {
+					// draw vertical lines
+					float stripeVal = floor( mod(vUv.z, 60.0) ) == 0.0  ? 1.0 : 0.0;
+					if(stripeVal == 0.){
+						col = vec4(0.,0.,0.,0.);
 					}else{
-						//mobile
-						mesh.position.y = -240
+						col = vec4(1.,1.,1.,1.);
 					}
+					gl_FragColor = col;
+				}
+				`
+			}
+			//Add ground plane with custom GLSL shader material
+			function addPlane() {
+				//using box geometry as plane
+				const geometry = new THREE.BoxGeometry(2500,1,2500);
+				//create material from GLSL shader
+				let material =  new THREE.ShaderMaterial({
+					fragmentShader: fragmentShader(),
+					vertexShader: vertexShader()
+				})
+				material.transparent = true;
+				//create mesh from geometry and material
+				let mesh = new THREE.Mesh(geometry, material)
+				//position ground plane based on device
+				if(window.innerWidth > mQ){
+					//desktop
 					mesh.position.y = -140
-					scene.add(mesh)
+				}else{
+					//mobile
+					mesh.position.y = -240
+				}
+				mesh.position.y = -140
+				scene.add(mesh)
+			}
+
+			// Mouse Events
+			function onMouseMove(evt) {
+				//check if mouse is being pressed
+				if (!mouseDown) {
+					return;
 				}
 
-				// EVENTS
-				function onMouseMove(evt) {
-					if (!mouseDown) {
-						return;
-					}
+				evt.preventDefault();
 
-					evt.preventDefault();
+				//if mouse is pressed pass event to variable and pass to rotateScene
+				var deltaX = evt.clientX - mouseX,
+				deltaY = evt.clientY - mouseY;
+				mouseX = evt.clientX;
+				mouseY = evt.clientY;
+				rotateScene(deltaX, deltaY);
+			}
 
-					var deltaX = evt.clientX - mouseX,
-					deltaY = evt.clientY - mouseY;
-					mouseX = evt.clientX;
-					mouseY = evt.clientY;
-					rotateScene(deltaX, deltaY);
-				}
+			//on mouse down get position and set state bool
+			function onMouseDown(evt) {
+				evt.preventDefault();
 
-				function onMouseDown(evt) {
-					evt.preventDefault();
+				mouseDown = true;
+				mouseX = evt.clientX;
+				mouseY = evt.clientY;
+			}
 
-					mouseDown = true;
-					mouseX = evt.clientX;
-					mouseY = evt.clientY;
-				}
+			//on mouse up change state bool
+			function onMouseUp(evt) {
+				evt.preventDefault();
 
-				function onMouseUp(evt) {
-					evt.preventDefault();
+				mouseDown = false;
+			}
+			
+			//rotate pivot group based on mouse position
+			function rotateScene(deltaX, deltaY) {
+				pivot.rotation.y -= deltaX / 200;
+				pivot.rotation.z += deltaY / 200;
+			}
 
-					mouseDown = false;
-				}
-				function rotateScene(deltaX, deltaY) {
-					pivot.rotation.y -= deltaX / 200;
-					pivot.rotation.z += deltaY / 200;
-				}
+			//IMAGE TAKING CODE
+			//show camera feed on button press
+			const imageButton = document.getElementById('addIcon');
+			imageButton.addEventListener('click', function(){
+				document.getElementById("camera").style.display = "block";
+			});
+			//Process device orientation when taking an image
+			document.querySelector('#addIcon').addEventListener('click', processMotionData);
+			//Get motion data from device orientation event
+			function processMotionData(){ 
+				window.addEventListener("deviceorientation", function(event) {
+				    // alpha: rotation around z-axis
+				    let _alpha = event.alpha;
+				    // gamma: left to right
+				    let _gamma = event.gamma;
+				    // beta: front back motion
+				    let _beta = event.beta;
 
-				//IMAGE TAKING CODE
-				//show camera feed on button press
-				const imageButton = document.getElementById('addIcon');
-				imageButton.addEventListener('click', function(){
-					document.getElementById("camera").style.display = "block";
+				    IO_obj.moAlpha = _alpha;
+				    IO_obj.moBeta = _beta;
+				    IO_obj.moGamma = _gamma;
+				}, true);
+			}
+			//Define elements to constants for readability
+			const cameraView = document.querySelector("#camera--view"),
+			cameraOutput = document.querySelector("#camera--output"),
+			cameraSensor = document.querySelector("#camera--sensor"),
+			cameraTrigger = document.querySelector("#camera--trigger"),
+			cameraAccess = document.querySelector("#addIcon");
+
+			let currentStream;
+			//Stop media stream as default for error catch
+			function stopMediaTracks(stream) {
+				stream.getTracks().forEach(track => {
+					track.stop();
 				});
-				//Process device orientation when taking an image
-				document.querySelector('#addIcon').addEventListener('click', processMotionData);
-				//Get motion data from device orientation event
-				function processMotionData(){ 
-					window.addEventListener("deviceorientation", function(event) {
-					    // alpha: rotation around z-axis
-					    let _alpha = event.alpha;
-					    // gamma: left to right
-					    let _gamma = event.gamma;
-					    // beta: front back motion
-					    let _beta = event.beta;
+			}
+			//Upload image to CDN via AJAX
+			function uploadFile(file, public_id) {
+				$.ajax({
+					xhr: function()
+					{
+						let xhr = new window.XMLHttpRequest();
+					    //Upload progress
+					    xhr.upload.addEventListener("progress", function(evt){
+					    	IO_obj.imgProgress = true;
+					    	cameraTrigger.style.display = "none";
+					    }, false);
+					    return xhr;
+					},
+					type    : "POST",
+					url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
+					beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
+					data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
+					success: function(data){
+						// console.log(data);
+						//on successful upload clear cameraOutput and allow another image to be taken
+						IO_obj.imgProgress = false;
+						cameraOutput.className = 'resetPos';
+						cameraOutput.src = "";
+						document.getElementById("camera").style.display = "none";
+						document.getElementById("addIcon").style.display = "block";
+					},
+					error: function(xhr, status, error) {
+						console.log(xhr);
+						console.log(status);
+						console.log(error);
+					}
+				});
+			}
 
-					    IO_obj.moAlpha = _alpha;
-					    IO_obj.moBeta = _beta;
-					    IO_obj.moGamma = _gamma;
-					}, true);
-				}
-				//Define elements to constants for readability
-				const cameraView = document.querySelector("#camera--view"),
-				cameraOutput = document.querySelector("#camera--output"),
-				cameraSensor = document.querySelector("#camera--sensor"),
-				cameraTrigger = document.querySelector("#camera--trigger"),
-				cameraAccess = document.querySelector("#addIcon");
+				//Capture data cameraTrigger is pressed
+				cameraTrigger.onclick = function() {
+					//get frame from webRTC
+					cameraSensor.width = cameraView.videoWidth;
+					cameraSensor.height = cameraView.videoHeight;
+					cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
+					cameraOutput.src = cameraSensor.toDataURL("image/png");
+					IO_obj.camImg = cameraOutput.src;
+					cameraOutput.className = 'taken';
 
-				let currentStream;
-				//Stop media stream as default for error catch
-				function stopMediaTracks(stream) {
-					stream.getTracks().forEach(track => {
-						track.stop();
-					});
-				}
-				//Upload image to CDN via AJAX
-				function uploadFile(file, public_id) {
-					$.ajax({
-						xhr: function()
-						{
-							let xhr = new window.XMLHttpRequest();
-						    //Upload progress
-						    xhr.upload.addEventListener("progress", function(evt){
-						    	IO_obj.imgProgress = true;
-						    	cameraTrigger.style.display = "none";
-						    }, false);
-						    return xhr;
-						},
-						type    : "POST",
-						url     : "https://api.cloudinary.com/v1_1/dbl3jetzn/image/upload",
-						beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
-						data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
-						success: function(data){
-							// console.log(data);
-							//on successful upload clear cameraOutput and allow another image to be taken
-							IO_obj.imgProgress = false;
-							cameraOutput.className = 'resetPos';
-							cameraOutput.src = "";
-							document.getElementById("camera").style.display = "none";
-							document.getElementById("addIcon").style.display = "block";
-						},
-						error: function(xhr, status, error) {
-							console.log(xhr);
-							console.log(status);
-							console.log(error);
-						}
-					});
-				}
-
-					//Capture data cameraTrigger is pressed
-					cameraTrigger.onclick = function() {
-						//get frame from webRTC
-						cameraSensor.width = cameraView.videoWidth;
-						cameraSensor.height = cameraView.videoHeight;
-						cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
-						cameraOutput.src = cameraSensor.toDataURL("image/png");
-						IO_obj.camImg = cameraOutput.src;
-						cameraOutput.className = 'taken';
-
-					    //get date
-					    let current = new Date();
-					    //file id random based off date
-					    let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
-					    //upload file to CDN
-					    uploadFile(IO_obj.camImg, fileID);
-					    //Get metadata values at button press
-					    let Alpha = IO_obj.moAlpha.toFixed(0); 
-					    let Beta = IO_obj.moBeta.toFixed(0);
-					    let Gamma = IO_obj.moGamma.toFixed(0);
-					    let Time = current.toLocaleTimeString();
-					    let ImgRef = fileID;
-					    //send metadata to LAMP stack
-					    $.ajax({
-					    	type    : "POST",
-					    	url     : "https://mothra.club",
-					    	data    : {'Alpha':Alpha,'Beta':Beta,'Gamma': Gamma, 'Time': Time, 'ImgRef': ImgRef},
-					    	success: function(data){
-					    		// console.log(data);
-					    	},
-					    	error: function(xhr, status, error) {
-					    		console.log(xhr);
-					    		console.log(status);
-					    		console.log(error);
-					    	}
-					    });
+				    //get date
+				    let current = new Date();
+				    //file id random based off date
+				    let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
+				    //upload file to CDN
+				    uploadFile(IO_obj.camImg, fileID);
+				    //Get metadata values at button press
+				    let Alpha = IO_obj.moAlpha.toFixed(0); 
+				    let Beta = IO_obj.moBeta.toFixed(0);
+				    let Gamma = IO_obj.moGamma.toFixed(0);
+				    let Time = current.toLocaleTimeString();
+				    let ImgRef = fileID;
+				    //send metadata to LAMP stack
+				    $.ajax({
+				    	type    : "POST",
+				    	url     : "https://mothra.club",
+				    	data    : {'Alpha':Alpha,'Beta':Beta,'Gamma': Gamma, 'Time': Time, 'ImgRef': ImgRef},
+				    	success: function(data){
+				    		// console.log(data);
+				    	},
+				    	error: function(xhr, status, error) {
+				    		console.log(xhr);
+				    		console.log(status);
+				    		console.log(error);
+				    	}
+				    });
+				};
+				//Start webRTC context
+				cameraAccess.onclick = function(){
+					if (typeof currentStream !== 'undefined') {
+						stopMediaTracks(currentStream);
+					}
+					const videoConstraints = {};
+					//Preference for rear facing camera
+					videoConstraints.facingMode = 'environment' || 'user';
+					const constraints = {
+						video: videoConstraints,
+						audio: false
 					};
-					//Start webRTC context
-					cameraAccess.onclick = function(){
-						if (typeof currentStream !== 'undefined') {
-							stopMediaTracks(currentStream);
-						}
-						const videoConstraints = {};
-						//Preference for rear facing camera
-						videoConstraints.facingMode = 'environment' || 'user';
-						const constraints = {
-							video: videoConstraints,
-							audio: false
-						};
-						navigator.mediaDevices
-						.getUserMedia(constraints)
-						.then(stream => {
-							currentStream = stream;
-							cameraView.srcObject = stream;
-							cameraAccess.style.display = "none";
-							return navigator.mediaDevices.enumerateDevices();
-						})
-						.catch(error => {
-							console.log("Permission Denied By User!");
-							document.getElementById("camera").style.display = "none";
-						});
-					};
+					navigator.mediaDevices
+					.getUserMedia(constraints)
+					.then(stream => {
+						currentStream = stream;
+						cameraView.srcObject = stream;
+						cameraAccess.style.display = "none";
+						return navigator.mediaDevices.enumerateDevices();
+					})
+					.catch(error => {
+						console.log("Permission Denied By User!");
+						document.getElementById("camera").style.display = "none";
+					});
+				};
 			}).catch(err => console.error(err));
 	</script>
 </body>
