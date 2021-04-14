@@ -55,19 +55,28 @@
 			<div class="lds-roller" id="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
 		</div>
 		<script type="module">
+			//import three JS
 			import * as THREE from '/build/three.module.js';
-
+			//import mobile device control & orientation
 			import { DeviceOrientationControls } from '/DeviceOrientationControls.js';
+			//fetch metadata from LAMP stack
 			fetch('https://mothra.club/server/apis/user.php')
 			.then(res => res.json())
 			.then((out) => {
+				//On success run three js app
+
+				//put resonse from fetch into constant
 				const inData = out.data;
 				
+				//variables for three js render
 				let camera, scene, renderer, controls, pivot;
+
 				//media query for different settings on mobile
 				const mQ = 650
+
 				//variables for mouse interaction
-				var mouseDown = false, mouseX = 0, mouseY = 0, lastKnownScrollPosition = 0, ticking = false;
+				var mouseDown = false, mouseX = 0, mouseY = 0;
+
 				//Object for motion data
 				var IO_obj = {
 					camImg: '',
@@ -76,17 +85,21 @@
 					moBeta: null,
 					imgProgress: false
 				};
+
+				//load images from CDN into array
 				let images = [];
 				for(let i = 0; i < inData.length; i++){
 					images.push(new THREE.TextureLoader().load("https://res.cloudinary.com/dbl3jetzn/image/upload/v1618331237/uploads/"+inData[i].ImgRef+".png"));
 				}
 
+				//Start three js context on button press
 				const startButton = document.getElementById( 'startButton' );
 				startButton.addEventListener('click', function(){
 					init();
 					animate();
 				});
 
+				//setup for three js app
 				function init() {
 					if(window.innerWidth > mQ){
 						document.getElementById('lhTxt').style.display="block";
@@ -177,13 +190,14 @@
 				}
 			}
 			function animate() {
+				//On desktop rotate group of images
 				if(window.innerWidth > mQ){
 					pivot.rotation.y += 0.002;
 				}
 				window.requestAnimationFrame(animate);
 				controls.update();
 				renderer.render(scene,camera);
-
+				//On image upload show progress animation
 				if(IO_obj.imgProgress == true){
 					document.getElementById("lds-roller").style.display = "inline-block";
 				}
@@ -323,30 +337,7 @@
 						track.stop();
 					});
 				}
-				//Start webRTC context
-				// function cameraStart() {
-				// 	if (typeof currentStream !== 'undefined') {
-				// 		stopMediaTracks(currentStream);
-				// 	}
-				// 	const videoConstraints = {};
-				// 	//Preference for rear facing camera
-				// 	videoConstraints.facingMode = 'environment' || 'user';
-				// 	const constraints = {
-				// 		video: videoConstraints,
-				// 		audio: false
-				// 	};
-				// 	navigator.mediaDevices
-				// 	.getUserMedia(constraints)
-				// 	.then(stream => {
-				// 		currentStream = stream;
-				// 		cameraView.srcObject = stream;
-				// 		return navigator.mediaDevices.enumerateDevices();
-				// 	})
-				// 	.catch(error => {
-				// 		console.error(error);
-				// 	});
-				// };
-				//Upload image to cloudinary CDN via AJAX
+				//Upload image to CDN via AJAX
 				function uploadFile(file, public_id) {
 					$.ajax({
 						xhr: function()
@@ -364,7 +355,8 @@
 						beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
 						data    : {'upload_preset':'undtgidc','tags': 'browser_upload', 'public_id' :  public_id,'file': file},
 						success: function(data){
-							console.log(data);
+							// console.log(data);
+							//on successful upload clear cameraOutput and allow another image to be taken
 							IO_obj.imgProgress = false;
 							cameraOutput.className = 'resetPos';
 							cameraOutput.src = "";
@@ -379,8 +371,9 @@
 					});
 				}
 
-					// Take a picture when cameraTrigger is pressed
+					//Capture data cameraTrigger is pressed
 					cameraTrigger.onclick = function() {
+						//get frame from webRTC
 						cameraSensor.width = cameraView.videoWidth;
 						cameraSensor.height = cameraView.videoHeight;
 						cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
@@ -390,22 +383,23 @@
 
 					    //get date
 					    let current = new Date();
-					    //file id
+					    //file id random based off date
 					    let fileID = Date.now().toString(36) + Math.random().toString(36).substr(2);
-
+					    //upload file to CDN
 					    uploadFile(IO_obj.camImg, fileID);
-
+					    //Get metadata values at button press
 					    let Alpha = IO_obj.moAlpha.toFixed(0); 
 					    let Beta = IO_obj.moBeta.toFixed(0);
 					    let Gamma = IO_obj.moGamma.toFixed(0);
 					    let Time = current.toLocaleTimeString();
 					    let ImgRef = fileID;
+					    //send metadata to LAMP stack
 					    $.ajax({
 					    	type    : "POST",
 					    	url     : "https://mothra.club",
 					    	data    : {'Alpha':Alpha,'Beta':Beta,'Gamma': Gamma, 'Time': Time, 'ImgRef': ImgRef},
 					    	success: function(data){
-					    		console.log(data);
+					    		// console.log(data);
 					    	},
 					    	error: function(xhr, status, error) {
 					    		console.log(xhr);
@@ -414,12 +408,13 @@
 					    	}
 					    });
 					};
-
+					//Start webRTC context
 					cameraAccess.onclick = function(){
 						if (typeof currentStream !== 'undefined') {
 							stopMediaTracks(currentStream);
 						}
 						const videoConstraints = {};
+						//Preference for rear facing camera
 						videoConstraints.facingMode = 'environment' || 'user';
 						const constraints = {
 							video: videoConstraints,
