@@ -87,6 +87,8 @@
 					imgProgress: false
 				};
 
+				let instanceRotation = THREE.Math.randInt(1,4);
+
 				//Create arrays for user data generated content
 				let planes = [];
 				let materials = [];
@@ -176,7 +178,7 @@
 					scene.add(pivot);
 
 					//rotate the scene by a random amount on each load to avoid grouping of images due to non absolute values on mobile
-					pivot.rotation.y += THREE.Math.randInt(1,4)*90*(Math.PI/180);
+					pivot.rotation.y += instanceRotation*90*(Math.PI/180);
 
 					//Add Light
 					const light = new THREE.AmbientLight(0x404040); // soft white light
@@ -398,8 +400,6 @@
 						IO_obj.imgProgress = false;
 						cameraOutput.className = 'resetPos';
 						cameraOutput.src = "";
-						document.getElementById("camera").style.display = "none";
-						document.getElementById("addIcon").style.display = "block";
 					},
 					error: function(xhr, status, error) {
 						console.log(xhr);
@@ -450,8 +450,11 @@
 							scene.add(meshes[meshes.length-1]);
 							//rotate and position mesh based on user data
 							meshes[meshes.length-1].rotateY(-Alpha*(Math.PI/180));
+							meshes[meshes.length-1].rotation.y += instanceRotation*90*(Math.PI/180);
 							meshes[meshes.length-1].rotateX(THREE.Math.mapLinear(((Beta)-90),90,-90,-90,90)*(Math.PI/180));
 							meshes[meshes.length-1].translateZ(50);
+							document.getElementById("camera").style.display = "none";
+							document.getElementById("addIcon").style.display = "block";
 				    	},
 				    	error: function(xhr, status, error) {
 				    		console.log(xhr);
