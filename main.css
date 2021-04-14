@@ -252,7 +252,7 @@ video::-webkit-media-controls {
 /*LOADING CSS*/
 
 .loading{
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   display: none;
@@ -263,7 +263,7 @@ video::-webkit-media-controls {
 
 .lds-roller {
   display: none;
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   display: none;
