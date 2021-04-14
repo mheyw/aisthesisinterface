@@ -447,7 +447,7 @@
 							//add mesh to scene
 							scene.add(meshes[meshes.length-1]);
 							//rotate and position mesh based on user data
-							meshes[meshes.length-1].rotateY(-Alpha-90*(Math.PI/180));
+							meshes[meshes.length-1].rotateY(-Alpha+90*(Math.PI/180));
 							meshes[meshes.length-1].rotateX(THREE.Math.mapLinear(((Beta)-90),90,-90,-90,90)*(Math.PI/180));
 							meshes[meshes.length-1].translateZ(50);
 				    	},
