@@ -55,12 +55,18 @@
 			<div class="lds-roller" id="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
 		</div>
 		<script type="module">
+			var inData
+			fetch('https://mothra.club/server/apis/user.php')
+			.then(res => res.json())
+			.then((out) => {
+				inData = out.data;
+			}).catch(err => console.error(err));
 
 			import * as THREE from '/build/three.module.js';
 
 			import { DeviceOrientationControls } from '/DeviceOrientationControls.js';
 
-			import {inData} from '/metadata.js';
+			// import {inData} from '/metadata.js';
 
 			let camera, scene, renderer, controls, pivot;
 		//media query for different settings on mobile
@@ -184,8 +190,8 @@
 		renderer.render(scene,camera);
 
 		if(IO_obj.imgProgress == true){
-                        document.getElementById("lds-roller").style.display = "inline-block";
-                    }
+			document.getElementById("lds-roller").style.display = "inline-block";
+		}
 		//if everything is available allow image capture
 		if(IO_obj.moAlpha !== null && IO_obj.moAlpha !== undefined){
             //check if img is being uploaded
@@ -387,8 +393,8 @@
 					console.log(status);
 					console.log(error);
 				}
-				});
-			}
+			});
+		}
 
 			// Take a picture when cameraTrigger is tapped
 			cameraTrigger.onclick = function() {
@@ -449,6 +455,6 @@
 					document.getElementById("camera").style.display = "none";
 				});
 			};
-</script>
-</body>
-</html>
+		</script>
+	</body>
+	</html>
