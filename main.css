@@ -249,6 +249,8 @@ select{
 video::-webkit-media-controls {
     display: none !important;
 }
+/*LOADING CSS*/
+
 .loading{
   width: 80px;
   height: 80px;
@@ -258,16 +260,19 @@ video::-webkit-media-controls {
   margin: -40px 0 0 -40px;
 }
 
-/*LOADING CSS*/
 .lds-roller {
   display: none;
-  position: relative;
-  width: 80px;
-  height: 80px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  display: none;
+  margin: 20px;
+  width: 50px;
+  height: 50px;
 }
 .lds-roller div {
   animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  transform-origin: 40px 40px;
+  transform-origin: 25px 25px;
 }
 .lds-roller div:after {
   content: " ";
