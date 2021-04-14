@@ -286,28 +286,15 @@
 					pivot.rotation.z += deltaY / 200;
 				}
 
-				//IMAGE TAKING
+				//IMAGE TAKING CODE
+				//show camera feed on button press
 				const imageButton = document.getElementById('addIcon');
 				imageButton.addEventListener('click', function(){
 					document.getElementById("camera").style.display = "block";
 				});
-
-				document.querySelector('#addIcon').addEventListener('click', requestDeviceOrientation);
-
-				function requestDeviceOrientation () {
-					if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-						DeviceOrientationEvent.requestPermission()
-						.then(permissionState => {
-							if (permissionState === 'granted') {
-								processMotionData();
-							}
-						})
-						.catch(console.error);
-					} else {
-						// handle regular non iOS 13+ devices
-						processMotionData();
-					}
-				}
+				//Process device orientation when taking an image
+				document.querySelector('#addIcon').addEventListener('click', processMotionData);
+				//Get motion data from device orientation event
 				function processMotionData(){ 
 					window.addEventListener("deviceorientation", function(event) {
 					    // alpha: rotation around z-axis
@@ -322,7 +309,7 @@
 					    IO_obj.moGamma = _gamma;
 					}, true);
 				}
-				// Define constants
+				//Define elements to constants for readability
 				const cameraView = document.querySelector("#camera--view"),
 				cameraOutput = document.querySelector("#camera--output"),
 				cameraSensor = document.querySelector("#camera--sensor"),
@@ -330,18 +317,19 @@
 				cameraAccess = document.querySelector("#addIcon");
 
 				let currentStream;
-
+				//Stop media stream as default for error catch
 				function stopMediaTracks(stream) {
 					stream.getTracks().forEach(track => {
 						track.stop();
 					});
 				}
-
+				//Start webRTC context
 				function cameraStart() {
 					if (typeof currentStream !== 'undefined') {
 						stopMediaTracks(currentStream);
 					}
 					const videoConstraints = {};
+					//Preference for rear facing camera
 					videoConstraints.facingMode = 'environment' || 'user';
 					const constraints = {
 						video: videoConstraints,
@@ -358,7 +346,7 @@
 						console.error(error);
 					});
 				};
-
+				//Upload image to cloudinary CDN via AJAX
 				function uploadFile(file, public_id) {
 					$.ajax({
 						xhr: function()
@@ -391,7 +379,7 @@
 					});
 				}
 
-					// Take a picture when cameraTrigger is tapped
+					// Take a picture when cameraTrigger is pressed
 					cameraTrigger.onclick = function() {
 						cameraSensor.width = cameraView.videoWidth;
 						cameraSensor.height = cameraView.videoHeight;
