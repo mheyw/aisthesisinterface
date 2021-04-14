@@ -148,7 +148,7 @@
 							//add mesh to scene
 							scene.add(meshes[i]);
 							//rotate and position mesh based on user data
-							meshes[i].rotateY(inData[i].Alpha*(Math.PI/180));
+							meshes[i].rotateY(-inData[i].Alpha*(Math.PI/180));
 							meshes[i].rotateX(THREE.Math.mapLinear(((inData[i].Beta)-90),90,-90,-90,90)*(Math.PI/180));
 							meshes[i].translateZ(100);
 						}else{
@@ -161,7 +161,7 @@
 							//add mesh to scene
 							scene.add(meshes[i]);
 							//rotate and position mesh based on user data
-							meshes[i].rotateY(inData[i].Alpha*(Math.PI/180));
+							meshes[i].rotateY(-inData[i].Alpha*(Math.PI/180));
 							meshes[i].rotateX(THREE.Math.mapLinear(((inData[i].Beta)-90),90,-90,-90,90)*(Math.PI/180));
 							meshes[i].translateZ(50);
 						}
@@ -445,7 +445,7 @@
 							//add mesh to scene
 							scene.add(meshes[meshes.length-1]);
 							//rotate and position mesh based on user data
-							meshes[meshes.length-1].rotateY(Alpha*(Math.PI/180));
+							meshes[meshes.length-1].rotateY(-Alpha*(Math.PI/180));
 							meshes[meshes.length-1].rotateX(THREE.Math.mapLinear(((Beta)-90),90,-90,-90,90)*(Math.PI/180));
 							meshes[meshes.length-1].translateZ(50);
 				    	},
