@@ -324,28 +324,28 @@
 					});
 				}
 				//Start webRTC context
-				function cameraStart() {
-					if (typeof currentStream !== 'undefined') {
-						stopMediaTracks(currentStream);
-					}
-					const videoConstraints = {};
-					//Preference for rear facing camera
-					videoConstraints.facingMode = 'environment' || 'user';
-					const constraints = {
-						video: videoConstraints,
-						audio: false
-					};
-					navigator.mediaDevices
-					.getUserMedia(constraints)
-					.then(stream => {
-						currentStream = stream;
-						cameraView.srcObject = stream;
-						return navigator.mediaDevices.enumerateDevices();
-					})
-					.catch(error => {
-						console.error(error);
-					});
-				};
+				// function cameraStart() {
+				// 	if (typeof currentStream !== 'undefined') {
+				// 		stopMediaTracks(currentStream);
+				// 	}
+				// 	const videoConstraints = {};
+				// 	//Preference for rear facing camera
+				// 	videoConstraints.facingMode = 'environment' || 'user';
+				// 	const constraints = {
+				// 		video: videoConstraints,
+				// 		audio: false
+				// 	};
+				// 	navigator.mediaDevices
+				// 	.getUserMedia(constraints)
+				// 	.then(stream => {
+				// 		currentStream = stream;
+				// 		cameraView.srcObject = stream;
+				// 		return navigator.mediaDevices.enumerateDevices();
+				// 	})
+				// 	.catch(error => {
+				// 		console.error(error);
+				// 	});
+				// };
 				//Upload image to cloudinary CDN via AJAX
 				function uploadFile(file, public_id) {
 					$.ajax({
