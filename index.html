@@ -15,10 +15,6 @@
 	<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="crossorigin="anonymous"></script>
 </head>
 <body>
-	<!-- test -->
-	<div class="loading">
-			<div class="lds-roller" id="lds-roller"><div></div></div>
-	</div>
 	<div id="overlay">
 		<img src="AIlogo.png" alt="Aisthesis Interface Logo" class="AIMainLogo"></img>
 		<div class="mobInfo">
@@ -44,7 +40,7 @@
 		</div>
 	</div>
 	<div class="addIcon" id="addIcon">
-		<img src="addIcon.png" alt="Add Image" role="button" style="width:100%; height:100%;"></img>
+		<img src="addIcon.png" alt="Add Image" id="addIconImage" role="button" style="width:100%; height:100%;"></img>
 	</div>
 	<div id="camera">
 		<!-- Camera sensor -->
@@ -348,10 +344,15 @@
 		//show camera feed on button press
 		const imageButton = document.getElementById('addIcon');
 		imageButton.addEventListener('click', function(){
-			document.getElementById("camera").style.display = "block";
+			//Check if image is currently being uploaded
+			if(IO_obj.imgProgress == false){
+				//Show Camera Feed
+				document.getElementById("camera").style.display = "block";
+				//Process device orientation when taking an image
+				processMotionData();
+			}
 		});
-		//Process device orientation when taking an image
-		document.querySelector('#addIcon').addEventListener('click', processMotionData);
+
 		//Get motion data from device orientation event
 		function processMotionData(){ 
 			window.addEventListener("deviceorientation", function(event) {
@@ -391,6 +392,7 @@
 				    xhr.upload.addEventListener("progress", function(evt){
 				    	IO_obj.imgProgress = true;
 				    	cameraTrigger.style.display = "none";
+				    	document.querySelector(#addIconImage).style.opacity = "0.2";
 				    }, false);
 				    return xhr;
 				},
@@ -404,6 +406,7 @@
 					IO_obj.imgProgress = false;
 					cameraOutput.className = 'resetPos';
 					cameraOutput.src = "";
+					document.querySelector(#addIconImage).style.opacity = "1.0";
 				},
 				error: function(xhr, status, error) {
 					console.log(xhr);
