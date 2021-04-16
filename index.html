@@ -468,6 +468,7 @@
 			};
 			//Start webRTC context
 			cameraAccess.onclick = function(){
+				if(IO_obj.imgProgress == false){
 				if (typeof currentStream !== 'undefined') {
 					stopMediaTracks(currentStream);
 				}
@@ -489,6 +490,7 @@
 					console.log("Permission Denied By User!");
 					document.getElementById("camera").style.display = "none";
 					});
+				}
 			};
 		}).catch(err => console.error(err));
 	</script>
