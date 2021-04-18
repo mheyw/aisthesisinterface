@@ -222,7 +222,7 @@
 		//Update function
 		function animate() {
 			//On desktop rotate group of images
-			if(window.innerWidth > mQ){
+			if(window.innerWidth > mQ && mouseDown == false){
 				pivot.rotation.y += 0.002;
 			}
 			window.requestAnimationFrame(animate);
