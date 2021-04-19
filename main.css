@@ -38,7 +38,7 @@ a, button, input, select {
     z-index: 2 !important; /* TODO Solve this in HTML */
 }
 p{
-    font-size:1em;
+    font-size:12px;
 }
 
 .lhTxt{
